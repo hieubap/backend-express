@@ -1,7 +1,12 @@
 const { Address } = require('../models/index.model')
+const BaseService = require('./base.service')
 
-module.exports = {
-    insert: async (address) => {
-        await Address.create(address)
-    },
+
+class AddressService extends BaseService{
+    constructor() {
+        super(Address);
+    }
+
+    // more query
 }
+module.exports= new AddressService()
