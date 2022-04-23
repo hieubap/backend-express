@@ -1,16 +1,6 @@
-const express = require('express')
-const addressRouter = express.Router()
-const AddressController = require('../controllers/address.controller')
-const BaseRouter = require('./base.router')
+const addressController = require('../controllers/address.controller');
+const addressRoute = require('express').Router();
 
-// middleware that is specific to this router
-class AddressRoute extends BaseRouter {
-    constructor() {
-        super(AddressController);
-
-    }
-    // write more route with format iife fuctunc here
-}
-
-
-module.exports = new AddressRoute()
+const router = require('./base.route')(addressRoute, addressController, 'address');
+// more router here
+module.exports = router;
