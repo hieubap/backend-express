@@ -11,23 +11,25 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
         idle: config.pool.idle,
     },
 })
-const db = {}
-db.Sequelize = Sequelize
-db.sequelize = sequelize
-db.testConnect = async () => {
-    try {
-        await db.sequelize.authenticate()
-        console.log('Connection has been established successfully.')
-    } catch (error) {
-        console.error('Unable to connect to the database:', error)
-    }
+const db = {
+    Sequelize : Sequelize,
+    sequelize : sequelize,
+    User : require('./user.model')(sequelize),
+    Address : require('./address.model')(sequelize),
+    testConnect : async () => {
+        try {
+            await db.sequelize.authenticate()
+            console.log('Connection has been established successfully.')
+        } catch (error) {
+            console.error('Unable to connect to the database:', error)
+        }
+    },
+    sync : () => sequelize.sync({ alter: true }) // this will create if not exist model in db
 }
-db.sync = () => sequelize.sync({ alter: true }) // this will create if not exist model in db
-db.drop = () => sequelize.drop() // drop all model in db
 
-db.User = require('./user.model')(sequelize);
-db.Address = require('./address.model')(sequelize);
+// define association between all model
+const {User , Address} = db
+User.hasMany(Address , { onDelete : 'RESTRICT' , onUpdate : 'RESTRICT'})
 
 module.exports = db
 
-// default mỗi model sẽ có trường các trường mặc định là id , createdAt , updatedAt , các trường mặc định là allowNull = true , defaultValue = null

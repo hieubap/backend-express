@@ -1,5 +1,4 @@
 const { DataTypes, Model } = require('sequelize')
-// const user = require('./user.model')
 
 module.exports = (sequelize) => {
     class Address extends Model {}
@@ -15,13 +14,13 @@ module.exports = (sequelize) => {
                 },
             },
             location: {
-                type : DataTypes.INTEGER,
-                validate : {
-                    isInt : {
-                        msg : 'location phai co dang integer'
-                    }
-                }
-            }
+                type: DataTypes.INTEGER,
+                validate: {
+                    isInt: {
+                        msg: 'location phai co dang integer',
+                    },
+                },
+            },
         },
         {
             sequelize,
