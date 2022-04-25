@@ -11,9 +11,11 @@ allAppRoute(app);
 
 const httpServer = require('http').createServer(app);
 let PORT;
-process.env.STATUS === 'production' ? (PORT = process.env.PROD_PORT || 3001) : (PORT = process.env.DEV_PORT || 3001);
+process.env.NODE_ENV === 'production' ? (PORT = process.env.PROD_PORT || 3001) : (PORT = process.env.DEV_PORT || 3001);
 
 httpServer.listen(PORT, () => {
-	console.log(`Server in ${process.env.STATUS} mode, listening on port:${PORT}`);
+	console.log(`Server in ${process.env.NODE_ENV} mode, listening on port:${PORT}`);
 });
-// db.sync();
+
+// db.sync({alter : true});
+

@@ -1,26 +1,42 @@
+const { Op } = require('sequelize');
+
 class BaseService {
 	constructor(Model) {
 		this.model = Model;
 	}
-
-	async search(whereClause, offset, limit) {
-		await this.model.findAndCountAll({ where: { ...whereClause }, limit, offset });
+	// ex : http://localhost:3001/address/search?address=%sydz%&limit=10&offset=0
+	search(whereClause, offset = 0, limit = 10) {
+		const tranformWhereClause = {};
+		if (Object.keys(whereClause).length) {
+			Object.keys(whereClause).forEach((key) => {
+				const value = whereClause[key];
+				if (value.startsWith('%') || value.endsWith('%')) {
+					tranformWhereClause[key] = {
+						[Op.like]: value,
+					};
+				}
+				// more if block
+			});
+		}
+		console.log(tranformWhereClause);
+		return this.model.findAndCountAll({ where: tranformWhereClause, offset, limit });
+	}
+	detail(id) {
+		return this.model.findByPk(id);
+	}
+	insert(model) {
+		return this.model.create(model);
+	}
+	batchInsert(listModel) {
+		return this.model.bulkCreate(listModel, { validate: true });
 	}
 
-	async detail(id) {
-		await this.model.findByPk(id);
+	update(updateModel, whereClause) {
+		return this.model.update(updateModel, { where: { ...whereClause } });
 	}
 
-	async insert(model) {
-		await this.model.create(model);
-	}
-
-	async update(updateModel, whereClause) {
-		await this.model.update(updateModel, { where: { ...whereClause } });
-	}
-
-	async delete(whereClause) {
-		await this.model.destroy({ ...whereClause });
+	delete(whereClause) {
+		return this.model.destroy({ where: { ...whereClause } });
 	}
 }
 

@@ -29,7 +29,7 @@ const db = {
 
 // define association between all model
 const {User , Address} = db
-User.hasMany(Address , { onDelete : 'RESTRICT' , onUpdate : 'RESTRICT'})
+// User.hasMany(Address , { onDelete : 'RESTRICT' , onUpdate : 'RESTRICT'})
 
 module.exports = db
 

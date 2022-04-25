@@ -3,28 +3,46 @@
 
 2. How to install
    ```
-    yarn add 
+    yarn install
    ```
    > if run error on window OS follow link https://www.nextofwindows.com/fix-unable-to-run-yarn-in-windows-terminal-powershell
-3. How to run
+   
+3. Database setup & migration
+   1.  run follow cmd to create db and import table 
+   ```
+        db-migrate db:create airsense20212 && db-migrate up -e dev
+   ```
+   > make sure your .env file correct or contact author
+   
+   2. (for dev) run all migration in folder 
     ```
-    yarn start
+        db-migrate up | <fileName> | -e (prod , dev , test)  
+        
     ```
-4. Database setup & migration
-    run all migration in folder 
-    ```
-        npx sequelize-cli db:migration
-    ```
-    undo migration : 
-    ```
-        npx sequelize-cli db:migrate:undo
-    ```
-    undo to specific migration : 
-    ```
-        npx sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
-    ```
+    - no fileName : run all in directory 
+    - -c <number> : run specific number in dir
+    - -e (prod , dev , test) : specific which config choosed
+   
 
-5. Author
+    3. (for dev) undo migration : 
+    ```
+        db-migrate down | <filename> | -c <number>   
+    ```
+    - down all use : db-migrate reset
+  
+    4. (for dev) create fileTemplate cmd : 
+    ```
+        db-migrate create <fileName> -e (prod , dev ,test)
+    ```
+    > File name should be init with rule : alterTableX , createTableX 
+
+    > Naming convention : table name should be Noun and singular , M-N table reference should named as N-ref-M , field should named as pascalCase ex : phone_number , foreign key should be name as <table_ref_name>_id ex : user_id , each table should have id , created_at , update_at , deleted_at field
+    - this will create xxxxxxxxxxxx-<fileName>-down.sql and xxxxxxxxxxxx-<fileName>-up.sql file in migrations/sqls ,we should copy sql statement to those
+ 1. How to run
+    ```
+    yarn dev
+    ```
+ 2. Author
    - Phung Van Sy
    - Pham Trong Phung
    - Vu Van Dai
