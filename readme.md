@@ -2,49 +2,52 @@
 1. Intro
 
 2. How to install
+   require nodejs v14+ , npm
    ```
     yarn install
    ```
+   not have yarn : `npm install -g yarn`
+
    > if run error on window OS follow link https://www.nextofwindows.com/fix-unable-to-run-yarn-in-windows-terminal-powershell
-   
+
 3. Database setup & migration
-   1.  run follow cmd to create db and import table 
+   1. create database 'airsense' in your local , and set enviroment in .env file
+   2. import table
    ```
-        db-migrate db:create airsense20212 && db-migrate up -e dev
+        db-migrate up -e dev
    ```
    > make sure your .env file correct or contact author
-   
-   2. (for dev) run all migration in folder 
+
+   2. (for dev) run all migration in folder
     ```
-        db-migrate up | <fileName> | -e (prod , dev , test)  
-        
+        db-migrate up | <fileName> | -e (prod , dev , test)
+
     ```
-    - no fileName : run all in directory 
+    - no fileName : run all in directory
     - -c <number> : run specific number in dir
     - -e (prod , dev , test) : specific which config choosed
-   
 
-    3. (for dev) undo migration : 
+    3. (for dev) undo migration :
     ```
-        db-migrate down | <filename> | -c <number>   
+        db-migrate down | <filename> | -c <number>
     ```
     - down all use : db-migrate reset
-  
-    4. (for dev) create fileTemplate cmd : 
+
+    4. (for dev) create fileTemplate cmd :
     ```
         db-migrate create <fileName> -e (prod , dev ,test)
     ```
-    > File name should be init with rule : alterTableX , createTableX 
+    > File name should be init with rule : alterTableX , createTableX
 
     > Naming convention : table name should be Noun and singular , M-N table reference should named as N-ref-M , field should named as pascalCase ex : phone_number , foreign key should be name as <table_ref_name>_id ex : user_id , each table should have id , created_at , update_at , deleted_at field
     - this will create xxxxxxxxxxxx-<fileName>-down.sql and xxxxxxxxxxxx-<fileName>-up.sql file in migrations/sqls ,we should copy sql statement to those
- 1. How to run
-    ```
-    yarn dev
-    ```
- 2. Author
-   - Phung Van Sy
-   - Pham Trong Phung
-   - Vu Van Dai
-   - Phan Ha Duy
-   - Tran Khuong Duy
+4. How to run
+   ```
+   yarn dev
+   ```
+5. Author
+6. Phung Van Sy
+7. Pham Trong Phung
+8. Vu Van Dai
+9. Phan Ha Duy
+10. Tran Khuong Duy
