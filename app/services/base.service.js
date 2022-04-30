@@ -19,7 +19,15 @@ class BaseService {
 			});
 		}
 		console.log(tranformWhereClause);
-		return this.model.findAndCountAll({ where: tranformWhereClause, offset, limit });
+		return this.model.findAndCountAll({
+			where: tranformWhereClause,
+			offset,
+			limit,
+			order: [['updated_at', 'ASC']],
+		});
+	}
+	async findOne(whereClause, includeClause) {
+		return this.model.findOne({ where: whereClause, include: includeClause });
 	}
 	detail(id) {
 		return this.model.findByPk(id);

@@ -29,7 +29,7 @@
 
     3. (for dev) undo migration :
     ```
-        db-migrate down | <filename> | -c <number>
+        db-migrate down | <filename> | -c <number> -e (prod , dev , test)
     ```
     - down all use : db-migrate reset
 

@@ -8,3 +8,4 @@ nginx-conf/
 docker-compose.*
 .gitlab-ci.yml
 *.md
+migrations/

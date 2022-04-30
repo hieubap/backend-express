@@ -1,12 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-const db = require('./app/models/index.model');
 const { allAppRoute } = require('./app/routes/index.route');
-
+const bodyParser = require('body-parser');
 const app = express();
 app.use(express.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 allAppRoute(app);
 
 const httpServer = require('http').createServer(app);
@@ -18,4 +17,3 @@ httpServer.listen(PORT, () => {
 });
 
 // db.sync({alter : true});
-

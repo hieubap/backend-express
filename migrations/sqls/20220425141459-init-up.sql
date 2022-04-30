@@ -292,7 +292,7 @@ CREATE TABLE `location` (
 -- manifest_authen: table
 CREATE TABLE `manifest_authen` (
   `manifestid` int(11) NOT NULL AUTO_INCREMENT,
-  `role` varchar(20) NOT NULL,
+  `role_name` varchar(20) NOT NULL,
   `content` varchar(100) CHARACTER SET utf32 COLLATE utf32_vietnamese_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -623,7 +623,7 @@ CREATE TABLE `status_history_device` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- user_manifest: table
-CREATE TABLE `user_manifest` (
+CREATE TABLE `user_ref_manifest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,
   `type_manifest` int(11) NOT NULL,
@@ -636,27 +636,6 @@ CREATE TABLE `user_manifest` (
   `deleteflag` int(11) NOT NULL,
   `oldid` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- users: table
-CREATE TABLE `users` (
-  `userid` int(11) NOT NULL,
-  `name` varchar(20) CHARACTER SET utf32 COLLATE utf32_unicode_ci DEFAULT NULL,
-  `fullname` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci DEFAULT NULL,
-  `phoneNumber` varchar(20) CHARACTER SET utf32 COLLATE utf32_unicode_ci DEFAULT NULL,
-  `email` varchar(255) CHARACTER SET utf32 COLLATE utf32_vietnamese_ci DEFAULT NULL,
-  `password` varchar(50) CHARACTER SET utf32 COLLATE utf32_vietnamese_ci DEFAULT NULL,
-  `contact` varchar(255) CHARACTER SET utf32 COLLATE utf32_vietnamese_ci DEFAULT NULL,
-  `addrid` int(11) NOT NULL,
-  `avartar` varchar(255) CHARACTER SET utf32 COLLATE utf32_vietnamese_ci DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `id_created` int(11) NOT NULL,
-  `id_updated` int(11) NOT NULL,
-  `note` varchar(30) CHARACTER SET utf32 COLLATE utf32_vietnamese_ci DEFAULT NULL,
-  `manifestid` int(11) NOT NULL,
-  `deleteflag` int(11) DEFAULT NULL,
-  PRIMARY KEY (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- warehouse_product: table

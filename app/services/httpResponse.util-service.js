@@ -1,7 +1,7 @@
 const constantObject = require('../constant');
 
 module.exports = {
-	handleError: (error, res) => {
+	handleError: (error, res, modelName = '') => {
 		console.log('xyz', error);
 		if (error.name === constantObject.SQLIZE_VALIDATION_ERROR) {
 			return res.status(400).json({
@@ -11,6 +11,19 @@ module.exports = {
 		if (error.name === constantObject.PARAMS_NUMBER_REQUIRED) {
 			return res.status(400).json({
 				error: error.message,
+			});
+		}
+		if (error.name === constantObject.SQLIZE_UNIQUE_CONSTRAINT_ERROR) {
+			return res.status(400).json({
+				error: error.errors.map((el) => {
+					const tmp = el.path.split('_');
+					tmp.pop();
+					tmp.shift();
+					const keyName = tmp.length > 1 ? tmp.join('-') : tmp;
+					return {
+						[keyName]: `${el.value} đã được sử dụng trong hệ thống`,
+					};
+				}),
 			});
 		}
 		// more if block code

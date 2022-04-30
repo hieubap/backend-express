@@ -1,6 +1,6 @@
-const { handleError } = require('../services/httpResponse.service');
+const { handleError } = require('../services/httpResponse.util-service');
 const constant = require('../constant');
-const Exception = require('../models/exception.model');
+const Exception = require('../models/exception.util-model');
 
 class BaseController {
 	constructor(service) {
@@ -55,7 +55,7 @@ class BaseController {
 	async delete(req, res, next) {
 		try {
 			await this.service.delete({ id: req.params.id });
-			return res.status(200).json({msg : constant.DELETE_SUCCESS , deleted_id : req.params.id});
+			return res.status(200).json({ msg: constant.DELETE_SUCCESS, deleted_id: req.params.id });
 		} catch (e) {
 			handleError(e, res);
 		}
