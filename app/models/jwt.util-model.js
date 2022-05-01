@@ -11,9 +11,9 @@ class JwtUtilModel {
 		});
 	}
 	verify(token) {
-		jwt.verify(token, this.key, (err, decoded) => {
+		return jwt.verify(token, this.key, (err, decoded) => {
 			if (err) return Promise.reject(err);
-			else return Promise.resolve(decoded);
+			else  return Promise.resolve(decoded);
 		});
 	}
 }
