@@ -1,7 +1,7 @@
 const constantObject = require('../constant');
 
 module.exports = {
-	handleError: (error, res, modelName = '') => {
+	handleError: (error, res) => {
 		console.log('xyz', error);
 		if (error.name === constantObject.SQLIZE_VALIDATION_ERROR) {
 			return res.status(400).json({

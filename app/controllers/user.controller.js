@@ -3,11 +3,13 @@ const BaseController = require('./base.controller');
 const { handleError } = require('../services/httpResponse.util-service');
 const jwtUtilModel = require('../models/jwt.util-model');
 const { Manifest, Permission } = require('../models/index.model');
+const constant = require('../constant');
 
 class UserController extends BaseController {
 	constructor() {
 		super(userService);
 	}
+
 	async login(req, res, next) {
 		try {
 			const result = await userService.findOne(
@@ -33,11 +35,12 @@ class UserController extends BaseController {
 			if (result) {
 				return res.status(200).json({ data: result, token: jwtUtilModel.genKey(result) });
 			}
-			return res.status(200).json(result);
+			return res.status(401).json({ msg: constant.BAD_CRIDENTAL });
 		} catch (e) {
 			handleError(e, res);
 		}
 	}
+
 	async getFullInfo(req, res, next) {
 		try {
 			const result = await this.service.getFullInfo();
@@ -47,4 +50,5 @@ class UserController extends BaseController {
 		}
 	}
 }
+
 module.exports = new UserController();
