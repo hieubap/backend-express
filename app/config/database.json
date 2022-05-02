@@ -1,28 +1,26 @@
 {
-	"defaultEnv": { "ENV": "NODE_ENV" },
-
-	"dev": {
-		"host": { "ENV": "MYSQL_HOST" },
-		"user": { "ENV": "MYSQL_USER" },
-		"password": { "ENV": "MYSQL_PASSWORD" },
-		"database": { "ENV": "MYSQL_DB" },
-		"driver": "mysql",
-		"multipleStatements": true
-	},
-	"prod": {
-		"host": { "ENV": "MYSQL_HOST" },
-		"user": { "ENV": "MYSQL_USER" },
-		"password": { "ENV": "MYSQL_PASSWORD" },
-		"database": { "ENV": "MYSQL_DB" },
-		"driver": "mysql",
-		"multipleStatements": true
-	},
-	"test": {
-		"host": { "ENV": "MYSQL_HOST" },
-		"user": { "ENV": "MYSQL_USER" },
-		"password": { "ENV": "MYSQL_PASSWORD" },
-		"database": { "ENV": "MYSQL_DB" },
-		"driver": "mysql",
-		"multipleStatements": true
-	}
+  "mysql": {
+    "host": {
+      "ENV": "MYSQL_HOST"
+    },
+    "user": {
+      "ENV": "MYSQL_USER"
+    },
+    "password": {
+      "ENV": "MYSQL_PASSWORD"
+    },
+    "database": {
+      "ENV": "MYSQL_DB"
+    },
+    "driver": "mysql",
+    "multipleStatements": true
+  },
+  "mongo": {
+    "host": "",
+    "user": "",
+    "password": "",
+    "database": "",
+    "driver": "mongo",
+    "multipleStatements": true
+  }
 }

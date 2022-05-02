@@ -1,4 +1,5 @@
 -- address: table
+
 CREATE TABLE `address` (
   `addrid` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,

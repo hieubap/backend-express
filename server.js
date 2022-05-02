@@ -5,15 +5,12 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(express.urlencoded({ extended: true }));
 allAppRoute(app);
 
 const httpServer = require('http').createServer(app);
-let PORT;
-process.env.NODE_ENV === 'production' ? (PORT = process.env.PROD_PORT || 3001) : (PORT = process.env.DEV_PORT || 3001);
 
-httpServer.listen(PORT, () => {
-	console.log(`Server in ${process.env.NODE_ENV} mode, listening on port:${PORT}`);
+httpServer.listen(process.env.PORT || 3001, () => {
+	console.log(`Server in ${process.env.STATUS} mode, listening on port:${process.env.PORT}`);
 });
 
 // db.sync({alter : true});
