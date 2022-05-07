@@ -1,5 +1,5 @@
 const { handleError } = require('../services/httpResponse.util-service');
-const constant = require('../constant');
+const { constant, statusCode } = require('../constant');
 const Exception = require('../models/exception.util-model');
 const { sequelize, Permission } = require('../models/index.model');
 const { QueryTypes } = require('sequelize');
@@ -37,7 +37,7 @@ class BaseController {
 			}
 
 			const result = await this.service.search(rest, +offset, +limit);
-			return res.status(200).json(result);
+			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -46,7 +46,7 @@ class BaseController {
 	async detail(req, res, next) {
 		try {
 			const result = await this.service.detail(req.params.id);
-			return res.status(200).json(result);
+			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -55,7 +55,7 @@ class BaseController {
 	async insert(req, res, next) {
 		try {
 			const createdModel = await this.service.insert(req.body);
-			return res.status(201).json({ msg: constant.INSERT_SUCCESS, content: createdModel });
+			return res.status(statusCode.CREATED_CODE).json({ msg: constant.INSERT_SUCCESS, content: createdModel });
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -64,7 +64,7 @@ class BaseController {
 	async batchInsert(req, res, next) {
 		try {
 			await this.service.batchInsert(req.body);
-			return res.status(201).json({ msg: constant.BATCH_INSERT_SUCCESS });
+			return res.status(statusCode.CREATED_CODE).json({ msg: constant.BATCH_INSERT_SUCCESS });
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -74,7 +74,7 @@ class BaseController {
 		try {
 			const updatedModel = await this.service.update(req.body, { id: req.params.id });
 			console.log(updatedModel);
-			return res.status(201).json({ msg: constant.UPDATE_SUCCESS, content: updatedModel });
+			return res.status(statusCode.CREATED_CODE).json({ msg: constant.UPDATE_SUCCESS, content: updatedModel });
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -83,7 +83,9 @@ class BaseController {
 	async delete(req, res, next) {
 		try {
 			await this.service.delete({ id: req.params.id });
-			return res.status(204).json({ msg: constant.DELETE_SUCCESS, deleted_id: req.params.id });
+			return res
+				.status(statusCode.DELETED_CODE)
+				.json({ msg: constant.DELETE_SUCCESS, deleted_id: req.params.id });
 		} catch (e) {
 			handleError(e, res);
 		}

@@ -20,6 +20,15 @@ const constantObject = {
 	PERMISSION_DENIED: 'không có quyền truy cập tài nguyên',
 	BAD_CRIDENTAL: 'Thông tin đăng nhập không chính xác',
 };
-
+const statusCode = {
+	SUCCESS_CODE: 200,
+	CREATED_CODE: 201,
+	DELETED_CODE: 204,
+	SERVER_ERROR_CODE: 500,
+	BAD_REQUEST_CODE: 400,
+	NOT_FOUND_CODE: 404,
+	NOT_AUTHEN_CODE: 401,
+	NOT_AUTHOR_CODE: 403,
+};
 Object.freeze(constantObject);
-module.exports = constantObject;
+module.exports = { constant: constantObject, statusCode };
