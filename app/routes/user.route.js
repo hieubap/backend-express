@@ -29,4 +29,6 @@ const router = require('./base.route')(userRoute, UserController, {
 });
 userRoute.post('/login', (req, res, next) => UserController.login(req, res, next));
 userRoute.post('/register', (req, res, next) => UserController.insert(req, res, next));
+userRoute.get('/getManifestAndPermission', (req, res, next) => UserController.getManifestAndPermission(req, res, next));
+userRoute.post('/addManifest', (req, res, next) => UserController.addManifest(req, res, next));
 module.exports = router;
