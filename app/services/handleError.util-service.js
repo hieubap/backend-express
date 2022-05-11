@@ -1,8 +1,9 @@
 const { errorCode, statusCode } = require('../constant');
+const logger = require('../config/loggerWinston');
 
 module.exports = {
 	handleError: (error, res) => {
-		console.log('xyz', error);
+		logger.log('error', JSON.stringify(error));
 		if (error.name === errorCode.SQLIZE_VALIDATION_ERROR) {
 			return res.status(statusCode.BAD_REQUEST_CODE).json({
 				error: error.errors.map((el) => ({ [el.path]: el.message })),

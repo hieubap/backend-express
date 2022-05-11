@@ -1,5 +1,6 @@
 const authenMiddle = require('../middlewares/authen.middleware');
 const { checkPermission } = require('../middlewares/author.middleware');
+const logger = require('../config/loggerWinston');
 
 const defaultOptions = {
 	detail: {
@@ -30,7 +31,7 @@ const defaultOptions = {
 
 module.exports = (router, controller, options = defaultOptions) => {
 	router.use(async (req, res, next) => {
-		console.log('Time: ', new Date().toLocaleString());
+		logger.log('info', 'IP : ' + req.socket.remoteAddress + ', Route : ' + req.originalUrl);
 		next();
 	});
 	!options.detail.isHide &&

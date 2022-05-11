@@ -1,5 +1,4 @@
 /* Replace with your SQL commands */
-drop table if exists manifest_ref_permission cascade;
 -- manifest_ref_permission: table
 CREATE TABLE `manifest_ref_permission` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

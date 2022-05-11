@@ -13,11 +13,11 @@ const router = require('./base.route')(userRoute, UserController, {
 		permission: 'SEARCH_USER',
 	},
 	insert: {
-		isHide: false,
+		isHide: true,
 		permission: 'CREATE_USER',
 	},
 	batchInsert: {
-		isHide: false,
+		isHide: true,
 		permission: 'BULKCREATE_USER',
 	},
 	update: {

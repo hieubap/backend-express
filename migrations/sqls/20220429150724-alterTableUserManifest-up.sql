@@ -1,7 +1,4 @@
 /* Replace with your SQL commands */
--- user_manifest: table
-drop table if exists user_ref_manifest cascade;
--- user_ref_manifest: table
 -- user_ref_manifest: table
 CREATE TABLE `user_ref_manifest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
