@@ -4,8 +4,9 @@ class BaseService {
 	constructor(Model) {
 		this.model = Model;
 	}
+
 	// ex : http://localhost:3001/address/search?address=%sydz%&limit=10&offset=0
-	search(whereClause, offset = 0, limit = 10) {
+	search(whereClause /* object like {id : 1}*/, offset = 0, limit = 10) {
 		const tranformWhereClause = {};
 		if (Object.keys(whereClause).length) {
 			Object.keys(whereClause).forEach((key) => {
@@ -18,7 +19,7 @@ class BaseService {
 				// more if block
 			});
 		}
-		console.log(tranformWhereClause);
+
 		return this.model.findAndCountAll({
 			where: tranformWhereClause,
 			offset,
@@ -26,15 +27,19 @@ class BaseService {
 			order: [['updated_at', 'ASC']],
 		});
 	}
-	async findOne(whereClause, includeClause) {
+
+	async findOne(whereClause /* object like {id : 1}*/, includeClause /* object config in case have associate */) {
 		return this.model.findOne({ where: whereClause, include: includeClause });
 	}
+
 	detail(id) {
 		return this.model.findByPk(id);
 	}
+
 	insert(model) {
 		return this.model.create(model);
 	}
+
 	batchInsert(listModel) {
 		return this.model.bulkCreate(listModel, { validate: true });
 	}

@@ -6,6 +6,10 @@ module.exports = (sequelize) => {
 		{
 			role_name: DataTypes.STRING(20),
 			content: DataTypes.STRING(100),
+      is_active:{
+        type : DataTypes.TINYINT,
+        defaultValue : 1
+      },
 		},
 		{
 			timestamps: true,

@@ -12,4 +12,16 @@ async function checkPermission(permissionRequired, req, res, next) {
 	}
 }
 
-module.exports = checkPermission;
+async function checkResourceOwner(req, res, next) {
+	if (req.params.id === req.id) {
+		req.isOwner = true;
+		next();
+	} else {
+		res.status(statusCode.NOT_AUTHOR_CODE).json({ msg: constant.NO_AUTHORIZE });
+	}
+}
+
+module.exports = {
+	checkPermission,
+	checkResourceOwner,
+};

@@ -19,6 +19,8 @@ const constantObject = {
 	TOKEN_EXPIRE: 'token hết hạn',
 	PERMISSION_DENIED: 'không có quyền truy cập tài nguyên',
 	BAD_CRIDENTAL: 'Thông tin đăng nhập không chính xác',
+	PASSWORD_WRONG: 'Mật khẩu không chính xác',
+	UPDATE_PASSWORD_SUCCESS: 'Cập nhật mật khẩu thành công',
 };
 const statusCode = {
 	SUCCESS_CODE: 200,

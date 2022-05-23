@@ -2,14 +2,19 @@ const { DataTypes, Model } = require('sequelize');
 
 module.exports = (sequelize) => {
 	class User extends Model {}
+
 	User.init(
 		{
-			name: {
+			user_name: {
 				type: DataTypes.STRING(20),
 				allowNull: false,
 				validate: {
 					notNull: {
-						msg: 'Name không được để trống',
+						msg: 'Username không được để trống',
+					},
+					len: {
+						args: [3, 24],
+						msg: 'Đô dài tối thiếu 3 kí tự , tối đa 24 kí tự',
 					},
 				},
 				unique: true,
@@ -28,9 +33,9 @@ module.exports = (sequelize) => {
 				allowNull: false,
 				unique: true,
 				validate: {
-					notNull: {
-						msg: 'Email không được để trống',
-					},
+					// notNull: {
+					// 	msg: 'Email không được để trống',
+					// },
 					is: {
 						args: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
 						msg: 'Số điện thoại không đúng định dạng',
@@ -71,6 +76,13 @@ module.exports = (sequelize) => {
 			},
 			note: {
 				type: DataTypes.STRING(255),
+			},
+			is_active: {
+				type: DataTypes.TINYINT,
+				defaultValue: 1,
+			},
+			token: {
+				type: DataTypes.STRING,
 			},
 		},
 		{

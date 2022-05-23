@@ -1,8 +1,9 @@
-const { handleError } = require('../services/httpResponse.util-service');
+const { handleError } = require('../services/handleError.util-service');
 const { constant, statusCode } = require('../constant');
 const Exception = require('../models/exception.util-model');
 const { sequelize, Permission } = require('../models/index.model');
 const { QueryTypes } = require('sequelize');
+const md5 = require('md5');
 
 class BaseController {
 	constructor(service) {
@@ -54,7 +55,8 @@ class BaseController {
 
 	async insert(req, res, next) {
 		try {
-			const createdModel = await this.service.insert(req.body);
+			const user = { ...req.body, password: md5(req.body?.password) };
+			const createdModel = await this.service.insert(user);
 			return res.status(statusCode.CREATED_CODE).json({ msg: constant.INSERT_SUCCESS, content: createdModel });
 		} catch (e) {
 			handleError(e, res);
