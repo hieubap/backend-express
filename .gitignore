@@ -3,3 +3,5 @@ node_modules/
 .idea/
 .vscode/
 app/config/database.json
+logInfo.log
+logError.log

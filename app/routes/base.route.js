@@ -1,5 +1,5 @@
 const authenMiddle = require('../middlewares/authen.middleware');
-const authorMiddle = require('../middlewares/author.middleware');
+const { checkPermission } = require('../middlewares/author.middleware');
 
 const defaultOptions = {
 	detail: {
@@ -37,7 +37,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 		router.get(
 			'/detail/:id',
 			(req, res, next) => authenMiddle(req, res, next),
-			(req, res, next) => authorMiddle(options.detail.permission, req, res, next),
+			(req, res, next) => checkPermission(options.detail.permission, req, res, next),
 			(req, res, next) => {
 				controller.detail(req, res, next);
 			},
@@ -47,7 +47,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 		router.get(
 			'/search',
 			(req, res, next) => authenMiddle(req, res, next),
-			(req, res, next) => authorMiddle(options.search.permission, req, res, next),
+			(req, res, next) => checkPermission(options.search.permission, req, res, next),
 			(req, res, next) => {
 				controller.search(req, res, next);
 			},
@@ -57,7 +57,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 		router.post(
 			'/insert',
 			(req, res, next) => authenMiddle(req, res, next),
-			(req, res, next) => authorMiddle(req.permission.includes(options.insert.permission), req, res, next),
+			(req, res, next) => checkPermission(options.insert.permission, req, res, next),
 			(req, res, next) => {
 				controller.insert(req, res, next);
 			},
@@ -66,7 +66,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 		router.post(
 			'/batch-insert',
 			(req, res, next) => authenMiddle(req, res, next),
-			(req, res, next) => authorMiddle(options.batchInsert.permission, req, res, next),
+			(req, res, next) => checkPermission(options.batchInsert.permission, req, res, next),
 			(req, res, next) => {
 				controller.batchInsert(req, res, next);
 			},
@@ -76,7 +76,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 		router.put(
 			'/update/:id',
 			(req, res, next) => authenMiddle(req, res, next),
-			(req, res, next) => authorMiddle(options.update.permission, req, res, next),
+			(req, res, next) => checkPermission(options.update.permission, req, res, next),
 			(req, res, next) => {
 				controller.update(req, res, next);
 			},
@@ -86,7 +86,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 		router.delete(
 			'/delete/:id',
 			(req, res, next) => authenMiddle(req, res, next),
-			(req, res, next) => authorMiddle(options.delete.permission, req, res, next),
+			(req, res, next) => checkPermission(options.delete.permission, req, res, next),
 			(req, res, next) => {
 				controller.delete(req, res, next);
 			},

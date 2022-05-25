@@ -46,21 +46,22 @@ class UserService extends BaseService {
 
 	async resetPassword(req) {
 		const { email } = req.body;
-		const user = await this.service.findOne({ email });
+		const user = await this.findOne({ email });
 		if (user) {
 			const passWordReset = v4();
 			const tokenReset = jwtModel.genKeyResetPass(user, passWordReset);
 			try {
-				await this.service.update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
+				await this.update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
 				await sendMail(
 					email,
 					'Xác nhận sử dụng tính năng quên mật khẩu',
-					resetPassTemplate(
-						`${
-							process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.SERVER_URL
-						}/reset-password/${tokenReset}`,
-						passWordReset,
-					),
+					'<h1>hello world</h1>',
+					// resetPassTemplate(
+					// 	`${
+					// 		process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.SERVER_URL
+					// 	}/reset-password/${tokenReset}`,
+					// 	passWordReset,
+					// ),
 				);
 				return returnReturnCode.SUCCESS;
 			} catch (e) {
