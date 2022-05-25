@@ -15,12 +15,14 @@ const constantObject = {
 	TIMEOUT: 'Máy chủ phản hồi quá lâu , vui lòng thử lại sau ',
 	SERVER_ERROR: 'Máy chủ xảy ra lỗi , vui lòng thử lại sau',
 	PARAMS_NUMBER_REQUIRED: 'Tham số không đúng định dạng ',
-	TOKEN_INVALID: 'token không đúng',
-	TOKEN_EXPIRE: 'token hết hạn',
+	TOKEN_INVALID: 'Token không đúng',
+	TOKEN_EXPIRE: 'Token hết hạn',
 	PERMISSION_DENIED: 'không có quyền truy cập tài nguyên',
 	BAD_CRIDENTAL: 'Thông tin đăng nhập không chính xác',
 	PASSWORD_WRONG: 'Mật khẩu không chính xác',
 	UPDATE_PASSWORD_SUCCESS: 'Cập nhật mật khẩu thành công',
+	BAD_PARAMETER: 'Tham số không đúng',
+	RESET_PASSWORD_SUCCESS: 'Vui lòng kiểm tra email và làm theo hướng dẫn',
 };
 const statusCode = {
 	SUCCESS_CODE: 200,
@@ -32,5 +34,13 @@ const statusCode = {
 	NOT_AUTHEN_CODE: 401,
 	NOT_AUTHOR_CODE: 403,
 };
+const functionReturnCode = {
+	CATCH_ERROR: -1,
+	VOID: 0,
+	SUCCESS: 1,
+	EXPIRED: -2,
+	NOT_FOUND: -3,
+};
+
 Object.freeze(constantObject);
-module.exports = { constant: constantObject, statusCode };
+module.exports = { constant: constantObject, statusCode, functionReturnCode };

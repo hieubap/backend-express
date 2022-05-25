@@ -84,6 +84,9 @@ module.exports = (sequelize) => {
 			token: {
 				type: DataTypes.STRING,
 			},
+			token_reset_pw: {
+				type: DataTypes.STRING,
+			},
 		},
 		{
 			timestamps: true,

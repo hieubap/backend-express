@@ -3,9 +3,11 @@ const BaseController = require('./base.controller');
 const { handleError } = require('../services/handleError.util-service');
 const jwtUtilModel = require('../models/jwt.util-model');
 const { Manifest, Permission } = require('../models/index.model');
-const { constant, statusCode } = require('../constant');
+const { constant, statusCode, functionReturnCode } = require('../constant');
 const manifestService = require('../services/manifest.service');
 const md5 = require('md5');
+const { sendMail, resetPassTemplate } = require('../config/mail.config');
+const jwtModel = require('../models/jwt.util-model');
 
 class UserController extends BaseController {
 	constructor() {
@@ -90,6 +92,9 @@ class UserController extends BaseController {
 	}
 
 	async changePassword(req, res, next) {
+		if (!req.body?.oldPassword || !req.body?.newPassword) {
+			return res.status(statusCode.BAD_REQUEST_CODE).json({ msg: constant.BAD_PARAMETER });
+		}
 		try {
 			const result = await this.service.updatePassword(req);
 			if (result) {
@@ -101,6 +106,28 @@ class UserController extends BaseController {
 			handleError(e, res);
 		}
 	}
+
+	async forgotPassword(req, res, next) {
+		if (!req.body?.email) {
+			return res.status(statusCode.BAD_REQUEST_CODE).json({ msg: constant.BAD_PARAMETER });
+		}
+		try {
+			const result = await this.service.resetPassword(req);
+			if (result === functionReturnCode.SUCCESS) {
+				return res.status(statusCode.SUCCESS_CODE).json({ msg: constant.RESET_PASSWORD_SUCCESS });
+			}
+			if (result === functionReturnCode.NOT_FOUND) {
+				return res.status(statusCode.BAD_REQUEST_CODE).json({ msg: constant.NOT_FOUND });
+			}
+			if (result === functionReturnCode.CATCH_ERROR) {
+				return res.status(statusCode.SERVER_ERROR_CODE).json({ msg: constant.SERVER_ERROR });
+			}
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
+	async confirmResetPw(req, res, next) {}
 }
 
 module.exports = new UserController();

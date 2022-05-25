@@ -44,4 +44,6 @@ userRoute.post(
 	(req, res, next) => verifyToken(req, res, next),
 	(req, res, next) => UserController.changePassword(req, res, next),
 );
+userRoute.post('/forgot-password', (req, res, next) => UserController.forgotPassword(req, res, next));
+userRoute.get('/reset-password/:tokenReset', (req, res, next) => UserController.confirmResetPw(req, res, next));
 module.exports = router;

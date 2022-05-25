@@ -1,6 +1,11 @@
 const { User, sequelize, Manifest, Permission } = require('../models/index.model');
 const BaseService = require('./base.service');
 const md5 = require('md5');
+const jwtModel = require('../models/jwt.util-model');
+const { sendMail, resetPassTemplate } = require('../config/mail.config');
+const { v4 } = require('uuid');
+const jwtUtilModel = require('../models/jwt.util-model');
+const { returnReturnCode, functionReturnCode } = require('../constant');
 
 class UserService extends BaseService {
 	constructor() {
@@ -37,6 +42,53 @@ class UserService extends BaseService {
 		if (md5(req.body?.oldPassword) === user.password) {
 			return this.update({ ...user, password: md5(req.body?.newPassword) }, { id });
 		} else return null;
+	}
+
+	async resetPassword(req) {
+		const { email } = req.body;
+		const user = await this.service.findOne({ email });
+		if (user) {
+			const passWordReset = v4();
+			const tokenReset = jwtModel.genKeyResetPass(user, passWordReset);
+			try {
+				await this.service.update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
+				await sendMail(
+					email,
+					'Xác nhận sử dụng tính năng quên mật khẩu',
+					resetPassTemplate(
+						`${
+							process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.SERVER_URL
+						}/reset-password/${tokenReset}`,
+						passWordReset,
+					),
+				);
+				return returnReturnCode.SUCCESS;
+			} catch (e) {
+				console.log(e);
+				return returnReturnCode.CATCH_ERROR;
+			}
+		} else {
+			return returnReturnCode.NOT_FOUND_CODE;
+		}
+	}
+
+	async confirmResetPass(req) {
+		const { tokenRest } = req.params;
+		const { newPass, exp, id } = await jwtModel.verify(tokenRest);
+		if (new Date().getTime() / 1000 > exp) {
+			return functionReturnCode.EXPIRED;
+		}
+		const user = await this.findOne({ token_reset_pw: newPass, id });
+		if (!user) {
+			return functionReturnCode.NOT_FOUND;
+		} else {
+			try {
+				this.update({ password: md5(newPass) }, { id });
+				return functionReturnCode.SUCCESS;
+			} catch (e) {
+				return functionReturnCode.CATCH_ERROR;
+			}
+		}
 	}
 }
 
