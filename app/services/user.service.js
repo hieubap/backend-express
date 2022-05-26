@@ -1,44 +1,55 @@
-const { User, sequelize, Manifest, Permission } = require('../models/index.model');
+const { User, sequelize, Manifest, Permission, UserRefManifest } = require('../models/index.model');
 const BaseService = require('./base.service');
 const md5 = require('md5');
 const jwtModel = require('../models/jwt.util-model');
 const { sendMail, parseResetPassTemplate } = require('../config/mail.config');
 const { v4 } = require('uuid');
 const { functionReturnCode } = require('../constant');
+const { Op } = require('sequelize');
 
 class UserService extends BaseService {
 	constructor() {
 		super(User);
 	}
 
-	getFullInfo(req) {}
-
 	async detail(id) {
 		return User.findByPk(id, {
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
+			include: {
+				model: Manifest,
+				attributes: ['id', 'role_name', 'content'],
+				include: {
+					model: Permission,
+					attributes: ['id', 'name'],
+					through: {
+						attributes: [],
+					},
+				},
+				through: {
+					attributes: [],
+				},
+			},
 		});
 	}
 
 	async addManifest(req) {
-		return User.findByPk(req.body.userId)
-			.then((user) => {
-				if (!user) {
-					console.log('User not found!');
-					return null;
-				}
-				return Manifest.findByPk(req.body.manifestId).then((manifest) => {
-					if (!manifest) {
-						console.log('Manifest not found!');
-						return null;
-					}
-					user.addManifest(manifest);
-					console.log(`>> added User id=${user.id} to Manifest id=${manifest.id}`);
-					return user;
-				});
-			})
-			.catch((err) => {
-				console.log('>> Error while adding Manifest to User: ', err);
-			});
+		const { userId, arrManifestId } = req.body;
+		const user = await User.findByPk(userId);
+		if (!user) return functionReturnCode.NOT_FOUND;
+		const listManifest = Manifest.findAll({
+			where: {
+				id: {
+					[Op.in]: arrManifestId,
+				},
+			},
+		});
+		if ((await listManifest).length !== arrManifestId.length) return functionReturnCode.NOT_FOUND;
+		return UserRefManifest.bulkCreate(
+			arrManifestId.map((manifest) => ({
+				user_id: userId,
+				manifest_id: manifest,
+			})),
+		);
 	}
 
 	async login(req) {

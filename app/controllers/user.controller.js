@@ -62,19 +62,16 @@ class UserController extends BaseController {
 		return this.update(req, res, next);
 	}
 
-	async getFullInfo(req, res, next) {
-		try {
-			const result = await this.service.getFullInfo();
-			return res.status(SUCCESS_CODE).json(result);
-		} catch (e) {
-			handleError(e, res);
-		}
-	}
-
 	async addManifest(req, res, next) {
+		if (isNaN(req.body.userId)) {
+			res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+		}
 		try {
 			const result = await this.service.addManifest(req);
-			return res.status(200).json(result);
+			if (result === functionReturnCode.NOT_FOUND) {
+				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
+			}
+			return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.BATCH_INSERT_SUCCESS });
 		} catch (e) {
 			handleError(e, res);
 		}

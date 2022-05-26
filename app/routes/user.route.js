@@ -29,9 +29,14 @@ const router = require('./base.route')(userRoute, UserController, {
 		permission: 'DELETE_USER',
 	},
 });
+userRoute.post(
+	'/attach-manifest',
+	(req, res, next) => verifyToken(req, res, next),
+	(req, res, next) => checkPermission('ASSIGN_MANIFEST_USER', req, res, next),
+	(req, res, next) => UserController.addManifest(req, res, next),
+);
 userRoute.post('/login', (req, res, next) => UserController.login(req, res, next));
 userRoute.post('/register', (req, res, next) => UserController.insert(req, res, next));
-userRoute.get('/getManifestAndPermission', (req, res, next) => UserController.getManifestAndPermission(req, res, next));
 userRoute.post('/addManifest', (req, res, next) => UserController.addManifest(req, res, next));
 userRoute.get(
 	'/detail/:id',
@@ -43,7 +48,7 @@ userRoute.get(
 userRoute.put(
 	'/self-update/:id',
 	(req, res, next) => verifyToken(req, res, next),
-	(req, res, next) => checkResourceOwner(req, res, next),
+	(req, res, next) => checkResourceOwner(req, res, next, true),
 	(req, res, next) => UserController.updateSelf(req, res, next),
 );
 userRoute.post(

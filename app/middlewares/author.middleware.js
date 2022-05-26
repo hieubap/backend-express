@@ -19,12 +19,15 @@ async function checkPermission(permissionRequired, req, res, next) {
 	}
 }
 
-async function checkResourceOwner(req, res, next) {
+async function checkResourceOwner(req, res, next, isRequired) {
 	if (+req.params.id === req.id) {
 		req.isOwner = true;
 		next();
 	} else {
-		res.status(statusCode.NOT_AUTHOR_CODE).json({ msg: messageConst.NO_AUTHORIZE });
+		if (isRequired) {
+			res.status(statusCode.NOT_AUTHOR_CODE).json({ msg: messageConst.NO_AUTHORIZE });
+		}
+		next();
 	}
 }
 

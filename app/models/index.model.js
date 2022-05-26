@@ -19,6 +19,7 @@ const db = {
 	User: require('./user.model')(sequelize),
 	Manifest: require('./manifest.model')(sequelize),
 	Permission: require('./permission.model')(sequelize),
+	UserRefManifest: require('./userRefManifest.model')(sequelize),
 
 	testConnect: async () => {
 		try {
@@ -32,12 +33,13 @@ const db = {
 };
 
 // define association between all model
-const { User, Manifest, Permission } = db;
+const { User, Manifest, Permission, UserRefManifest } = db;
 User.belongsToMany(Manifest, {
-	through: 'user_ref_manifest',
+	through: UserRefManifest,
 	foreignKey: 'user_id',
 	otherKey: 'manifest_id',
 });
+
 Manifest.belongsToMany(Permission, {
 	through: 'manifest_ref_permission',
 	foreignKey: 'manifest_id',
