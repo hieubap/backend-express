@@ -2,34 +2,43 @@ const nodeMailer = require('nodemailer');
 const handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
+const { google } = require('googleapis');
+const { promisify } = require('util');
+const readFileAsync = promisify(fs.readFile);
+const systemEmail = process.env.SYSTEM_EMAIL;
+const systemClientId = process.env.SYSTEM_CLIENT_ID;
+const systemClientSecret = process.env.SYSTEM_CLIENT_SECRET;
+const redirectUrl = process.env.REDIRECT_URL;
+const refreshToken = process.env.REFRESH_TOKEN;
 
-const adminEmail = process.env.SYSTEM_EMAIL;
-const adminPassword = process.env.SYSTEM_EMAIL_PW;
-const mailHost = 'smtp.gmail.com';
+const oAuth2Client = new google.auth.OAuth2(systemClientId, systemClientSecret, redirectUrl);
+oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
-const ResetPassHtmlPath = path.join(__dirname, 'app/assets/resetPass.html');
+const parseResetPassTemplate = async (redirectLink, newPass) => {
+	console.log('hgelasdasda', fs.readFileSync(path.join(__dirname, '../assets/resetPass.html'), 'utf-8').toString());
 
-const source = (path) => fs.readFileSync(path, 'utf-8').toString();
-const resetPassTemplate = (redirectLink, newPass) =>
-	handlebars.compile(source(ResetPassHtmlPath))(redirectLink, newPass);
+	const contentResetPassHTML = await readFileAsync(path.join(__dirname, 'app/assets/resetPass.html'));
+	return handlebars.compile(contentResetPassHTML.toString())({
+		redirectLink,
+		newPass,
+	});
+};
 
-const mailPort = 465;
-const sendMail = (to, subject, htmlTemplate) => {
+const sendMail = async (to, subject, htmlTemplate) => {
+	const accessToken = await oAuth2Client.getAccessToken();
 	const transporter = nodeMailer.createTransport({
-		host: mailHost,
-		port: mailPort,
-		secure: false,
+		service: 'gmail',
 		auth: {
 			type: 'OAuth2',
-			user: adminEmail,
-			clientId: 'CLIENT_ID_HERE',
-			clientSecret: 'CLIENT_SECRET_HERE',
-			refreshToken: '1/XXxXxsss-xxxXXXXXxXxx0XXXxxXXx0x00xxx',
-			accessToken: 'REFRESH_TOKEN_HERE',
+			user: systemEmail,
+			clientId: systemClientId,
+			clientSecret: systemClientSecret,
+			refreshToken,
+			accessToken,
 		},
 	});
 	const options = {
-		from: adminEmail,
+		from: systemEmail,
 		to,
 		subject,
 		html: htmlTemplate,
@@ -38,5 +47,5 @@ const sendMail = (to, subject, htmlTemplate) => {
 };
 module.exports = {
 	sendMail,
-	resetPassTemplate,
+	parseResetPassTemplate,
 };

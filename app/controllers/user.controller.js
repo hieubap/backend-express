@@ -4,7 +4,6 @@ const { handleError } = require('../services/handleError.util-service');
 const jwtUtilModel = require('../models/jwt.util-model');
 const { Manifest, Permission } = require('../models/index.model');
 const { constant, statusCode, functionReturnCode } = require('../constant');
-const manifestService = require('../services/manifest.service');
 const md5 = require('md5');
 const { sendMail, resetPassTemplate } = require('../config/mail.config');
 const jwtModel = require('../models/jwt.util-model');
@@ -114,7 +113,9 @@ class UserController extends BaseController {
 		try {
 			const result = await this.service.resetPassword(req);
 			if (result === functionReturnCode.SUCCESS) {
-				return res.status(statusCode.SUCCESS_CODE).json({ msg: constant.RESET_PASSWORD_SUCCESS });
+				return res
+					.status(statusCode.SUCCESS_CODE)
+					.json({ status: statusCode.SUCCESS_CODE, msg: constant.RESET_PASSWORD_SUCCESS });
 			}
 			if (result === functionReturnCode.NOT_FOUND) {
 				return res.status(statusCode.BAD_REQUEST_CODE).json({ msg: constant.NOT_FOUND });

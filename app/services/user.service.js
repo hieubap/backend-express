@@ -2,10 +2,12 @@ const { User, sequelize, Manifest, Permission } = require('../models/index.model
 const BaseService = require('./base.service');
 const md5 = require('md5');
 const jwtModel = require('../models/jwt.util-model');
-const { sendMail, resetPassTemplate } = require('../config/mail.config');
+const { sendMail, parseResetPassTemplate } = require('../config/mail.config');
 const { v4 } = require('uuid');
 const jwtUtilModel = require('../models/jwt.util-model');
-const { returnReturnCode, functionReturnCode } = require('../constant');
+const { functionReturnCode } = require('../constant');
+const fs = require('fs');
+const path = require('path');
 
 class UserService extends BaseService {
 	constructor() {
@@ -52,24 +54,25 @@ class UserService extends BaseService {
 			const tokenReset = jwtModel.genKeyResetPass(user, passWordReset);
 			try {
 				await this.update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
-				await sendMail(
-					email,
-					'Xác nhận sử dụng tính năng quên mật khẩu',
-					'<h1>hello world</h1>',
-					// resetPassTemplate(
-					// 	`${
-					// 		process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.SERVER_URL
-					// 	}/reset-password/${tokenReset}`,
-					// 	passWordReset,
-					// ),
+				console.log(
+					'gello',
+					fs.readFileSync(path.resolve(__dirname, 'app/assets/resetPass.html'), 'utf-8').toString(),
 				);
-				return returnReturnCode.SUCCESS;
+
+				const mailContent = await parseResetPassTemplate(
+					`${
+						process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.SERVER_URL
+					}/reset-password/${tokenReset}`,
+					passWordReset,
+				);
+				await sendMail(email, 'Xác nhận sử dụng tính năng quên mật khẩu', mailContent);
+				return functionReturnCode.SUCCESS;
 			} catch (e) {
 				console.log(e);
-				return returnReturnCode.CATCH_ERROR;
+				return functionReturnCode.CATCH_ERROR;
 			}
 		} else {
-			return returnReturnCode.NOT_FOUND_CODE;
+			return functionReturnCode.NOT_FOUND;
 		}
 	}
 
