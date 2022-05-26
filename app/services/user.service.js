@@ -4,10 +4,7 @@ const md5 = require('md5');
 const jwtModel = require('../models/jwt.util-model');
 const { sendMail, parseResetPassTemplate } = require('../config/mail.config');
 const { v4 } = require('uuid');
-const jwtUtilModel = require('../models/jwt.util-model');
 const { functionReturnCode } = require('../constant');
-const fs = require('fs');
-const path = require('path');
 
 class UserService extends BaseService {
 	constructor() {
@@ -15,6 +12,12 @@ class UserService extends BaseService {
 	}
 
 	getFullInfo(req) {}
+
+	async detail(id) {
+		return User.findByPk(id, {
+			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
+		});
+	}
 
 	async addManifest(req) {
 		return User.findByPk(req.body.userId)
@@ -38,6 +41,27 @@ class UserService extends BaseService {
 			});
 	}
 
+	async login(req) {
+		return User.findOne({
+			where: { ...req.body, password: md5(req.body?.password), is_active: 1 },
+			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
+			include: {
+				model: Manifest,
+				attributes: ['id', 'role_name', 'content'],
+				include: {
+					model: Permission,
+					attributes: ['id', 'name'],
+					through: {
+						attributes: [],
+					},
+				},
+				through: {
+					attributes: [],
+				},
+			},
+		});
+	}
+
 	async updatePassword(req) {
 		const id = req.id;
 		const user = await this.findOne({ id });
@@ -54,15 +78,10 @@ class UserService extends BaseService {
 			const tokenReset = jwtModel.genKeyResetPass(user, passWordReset);
 			try {
 				await this.update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
-				console.log(
-					'gello',
-					fs.readFileSync(path.resolve(__dirname, 'app/assets/resetPass.html'), 'utf-8').toString(),
-				);
-
 				const mailContent = await parseResetPassTemplate(
 					`${
-						process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.SERVER_URL
-					}/reset-password/${tokenReset}`,
+						process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.APP_SERVER_URL
+					}/user/reset-password/${tokenReset}`,
 					passWordReset,
 				);
 				await sendMail(email, 'Xác nhận sử dụng tính năng quên mật khẩu', mailContent);
@@ -77,12 +96,12 @@ class UserService extends BaseService {
 	}
 
 	async confirmResetPass(req) {
-		const { tokenRest } = req.params;
-		const { newPass, exp, id } = await jwtModel.verify(tokenRest);
+		const { tokenReset } = req.params;
+		const { newPass, exp, id } = await jwtModel.verify(tokenReset);
 		if (new Date().getTime() / 1000 > exp) {
 			return functionReturnCode.EXPIRED;
 		}
-		const user = await this.findOne({ token_reset_pw: newPass, id });
+		const user = await this.findOne({ token_reset_pw: tokenReset, id });
 		if (!user) {
 			return functionReturnCode.NOT_FOUND;
 		} else {

@@ -16,7 +16,6 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
 const db = {
 	Sequelize,
 	sequelize,
-	Address: require('./address.model')(sequelize),
 	User: require('./user.model')(sequelize),
 	Manifest: require('./manifest.model')(sequelize),
 	Permission: require('./permission.model')(sequelize),

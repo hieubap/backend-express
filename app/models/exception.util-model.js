@@ -1,9 +1,7 @@
 class Exception {
-    
-    constructor(name , message ) {
-        this.name = name 
-        this.message = message        
-    }
-    
+	constructor(name, message) {
+		this.name = name;
+		this.message = message;
+	}
 }
-module.exports = Exception
+module.exports = Exception;

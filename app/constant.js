@@ -1,7 +1,4 @@
-const constantObject = {
-	SQLIZE_VALIDATION_ERROR: 'SequelizeValidationError',
-	SQLIZE_DB_NAME_ERROR: 'SequelizeDatabaseError',
-	SQLIZE_UNIQUE_CONSTRAINT_ERROR: 'SequelizeUniqueConstraintError',
+const messageConst = {
 	INSERT_SUCCESS: 'Thêm đối tượng thành công',
 	INSERT_FAIL: 'Thêm đối tượng thất bại',
 	BATCH_INSERT_SUCCESS: 'Thêm danh sách đối tượng thành công',
@@ -15,7 +12,7 @@ const constantObject = {
 	TIMEOUT: 'Máy chủ phản hồi quá lâu , vui lòng thử lại sau ',
 	SERVER_ERROR: 'Máy chủ xảy ra lỗi , vui lòng thử lại sau',
 	PARAMS_NUMBER_REQUIRED: 'Tham số không đúng định dạng ',
-	TOKEN_INVALID: 'Token không đúng',
+	TOKEN_INVALID: 'Token không chính xác',
 	TOKEN_EXPIRE: 'Token hết hạn',
 	PERMISSION_DENIED: 'không có quyền truy cập tài nguyên',
 	BAD_CRIDENTAL: 'Thông tin đăng nhập không chính xác',
@@ -23,6 +20,11 @@ const constantObject = {
 	UPDATE_PASSWORD_SUCCESS: 'Cập nhật mật khẩu thành công',
 	BAD_PARAMETER: 'Tham số không đúng',
 	RESET_PASSWORD_SUCCESS: 'Vui lòng kiểm tra email và làm theo hướng dẫn',
+};
+const errorCode = {
+	SQLIZE_VALIDATION_ERROR: 'SequelizeValidationError',
+	SQLIZE_DB_NAME_ERROR: 'SequelizeDatabaseError',
+	SQLIZE_UNIQUE_CONSTRAINT_ERROR: 'SequelizeUniqueConstraintError',
 };
 const statusCode = {
 	SUCCESS_CODE: 200,
@@ -41,6 +43,9 @@ const functionReturnCode = {
 	EXPIRED: -2,
 	NOT_FOUND: -3,
 };
+Object.freeze(messageConst);
+Object.freeze(errorCode);
+Object.freeze(statusCode);
+Object.freeze(functionReturnCode);
 
-Object.freeze(constantObject);
-module.exports = { constant: constantObject, statusCode, functionReturnCode };
+module.exports = { messageConst, errorCode, statusCode, functionReturnCode };

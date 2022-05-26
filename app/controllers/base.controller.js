@@ -1,5 +1,5 @@
 const { handleError } = require('../services/handleError.util-service');
-const { constant, statusCode } = require('../constant');
+const { messageConst, statusCode } = require('../constant');
 const Exception = require('../models/exception.util-model');
 const { sequelize, Permission } = require('../models/index.model');
 const { QueryTypes } = require('sequelize');
@@ -34,7 +34,7 @@ class BaseController {
 		try {
 			const { limit = 10, offset = 0, ...rest } = req.query;
 			if (isNaN(+limit) || isNaN(+offset)) {
-				throw new Exception(constant.PARAMS_NUMBER_REQUIRED, constant.PARAMS_NUMBER_REQUIRED);
+				throw new Exception(messageConst.PARAMS_NUMBER_REQUIRED, messageConst.PARAMS_NUMBER_REQUIRED);
 			}
 
 			const result = await this.service.search(rest, +offset, +limit);
@@ -55,9 +55,10 @@ class BaseController {
 
 	async insert(req, res, next) {
 		try {
-			const user = { ...req.body, password: md5(req.body?.password) };
-			const createdModel = await this.service.insert(user);
-			return res.status(statusCode.CREATED_CODE).json({ msg: constant.INSERT_SUCCESS, content: createdModel });
+			const createdModel = await this.service.insert(req.body);
+			return res
+				.status(statusCode.CREATED_CODE)
+				.json({ msg: messageConst.INSERT_SUCCESS, content: createdModel });
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -66,7 +67,7 @@ class BaseController {
 	async batchInsert(req, res, next) {
 		try {
 			await this.service.batchInsert(req.body);
-			return res.status(statusCode.CREATED_CODE).json({ msg: constant.BATCH_INSERT_SUCCESS });
+			return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.BATCH_INSERT_SUCCESS });
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -74,9 +75,8 @@ class BaseController {
 
 	async update(req, res, next) {
 		try {
-			const updatedModel = await this.service.update(req.body, { id: req.params.id });
-			console.log(updatedModel);
-			return res.status(statusCode.CREATED_CODE).json({ msg: constant.UPDATE_SUCCESS, content: updatedModel });
+			await this.service.update(req.body, { id: req.params.id });
+			return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -87,7 +87,7 @@ class BaseController {
 			await this.service.delete({ id: req.params.id });
 			return res
 				.status(statusCode.DELETED_CODE)
-				.json({ msg: constant.DELETE_SUCCESS, deleted_id: req.params.id });
+				.json({ msg: messageConst.DELETE_SUCCESS, deleted_id: req.params.id });
 		} catch (e) {
 			handleError(e, res);
 		}

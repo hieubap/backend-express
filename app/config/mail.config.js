@@ -15,9 +15,7 @@ const oAuth2Client = new google.auth.OAuth2(systemClientId, systemClientSecret, 
 oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
 const parseResetPassTemplate = async (redirectLink, newPass) => {
-	console.log('hgelasdasda', fs.readFileSync(path.join(__dirname, '../assets/resetPass.html'), 'utf-8').toString());
-
-	const contentResetPassHTML = await readFileAsync(path.join(__dirname, 'app/assets/resetPass.html'));
+	const contentResetPassHTML = await readFileAsync('app/assets/resetPass.html');
 	return handlebars.compile(contentResetPassHTML.toString())({
 		redirectLink,
 		newPass,
