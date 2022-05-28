@@ -29,15 +29,15 @@ const router = require('./base.route')(userRoute, UserController, {
 		permission: 'DELETE_USER',
 	},
 });
+
 userRoute.post(
-	'/attach-manifest',
+	'/insert',
 	(req, res, next) => verifyToken(req, res, next),
-	(req, res, next) => checkPermission('ASSIGN_MANIFEST_USER', req, res, next),
-	(req, res, next) => UserController.addManifest(req, res, next),
+	(req, res, next) => checkPermission('CREATE_USER', req, res, next),
+	(req, res, next) => UserController.insert(req, res, next),
 );
 userRoute.post('/login', (req, res, next) => UserController.login(req, res, next));
 userRoute.post('/register', (req, res, next) => UserController.insert(req, res, next));
-userRoute.post('/addManifest', (req, res, next) => UserController.addManifest(req, res, next));
 userRoute.get(
 	'/detail/:id',
 	(req, res, next) => verifyToken(req, res, next),

@@ -7,13 +7,14 @@ class BaseService {
 
 	// ex : http://localhost:3001/address/search?address=%sydz%&limit=10&offset=0
 	search(whereClause /* object like {id : 1}*/, offset = 0, limit = 10) {
-		const tranformWhereClause = {};
+		const transformWhereClause = {};
 		if (Object.keys(whereClause).length) {
 			Object.keys(whereClause).forEach((key) => {
 				const value = whereClause[key];
 				if (value.startsWith('%') || value.endsWith('%')) {
-					tranformWhereClause[key] = {
+					transformWhereClause[key] = {
 						[Op.like]: value,
+						deleteAt: null,
 					};
 				}
 				// more if block
@@ -21,7 +22,7 @@ class BaseService {
 		}
 
 		return this.model.findAndCountAll({
-			where: tranformWhereClause,
+			where: transformWhereClause,
 			offset,
 			limit,
 			order: [['updated_at', 'ASC']],
@@ -29,7 +30,7 @@ class BaseService {
 	}
 
 	async findOne(whereClause /* object like {id : 1}*/, includeClause /* object config in case have associate */) {
-		return this.model.findOne({ where: whereClause, include: includeClause });
+		return this.model.findOne({ where: { ...whereClause, deleted_at: null }, include: includeClause });
 	}
 
 	detail(id) {
@@ -48,6 +49,7 @@ class BaseService {
 		return this.model.update(updateModel, { where: { ...whereClause } });
 	}
 
+	// will update fiel deleted_at because enable paranoid
 	delete(whereClause) {
 		return this.model.destroy({ where: { ...whereClause } });
 	}

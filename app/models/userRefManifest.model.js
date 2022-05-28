@@ -11,6 +11,9 @@ module.exports = (sequelize) => {
 			manifest_id: {
 				type: DataTypes.INTEGER,
 			},
+			created_id: {
+				type: DataTypes.INTEGER,
+			},
 		},
 		{
 			timestamps: true,

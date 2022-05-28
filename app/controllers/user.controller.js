@@ -7,6 +7,7 @@ const { messageConst, statusCode, functionReturnCode } = require('../constant');
 const md5 = require('md5');
 const { sendMail, resetPassTemplate } = require('../config/mail.config');
 const jwtModel = require('../models/jwt.util-model');
+const { sequelize, UserRefManifest } = require('../models/index.model');
 
 const {
 	SERVER_ERROR_CODE,
@@ -25,16 +26,23 @@ class UserController extends BaseController {
 		super(userService);
 	}
 
+	// Overide method or create new
 	async insert(req, res, next) {
 		try {
-			const user = { ...req.body, password: md5(req.body?.password) };
-			if (req.id) {
-				user.created_id = req.id;
-			}
-			const createdModel = await this.service.insert(user);
-			return res
-				.status(statusCode.CREATED_CODE)
-				.json({ msg: messageConst.INSERT_SUCCESS, content: createdModel });
+			const result = await this.service.insert(req, res);
+			UserController.checkServiceResult(result, res, 'Thêm đối người dùng thành công');
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
+	async update(req, res, next) {
+		if (isNaN(req.params.id)) {
+			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+		}
+		try {
+			const result = await this.service.update(req, res);
+			UserController.checkServiceResult(result, res, 'Chỉnh sửa người dùng thành công');
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -54,7 +62,7 @@ class UserController extends BaseController {
 
 	async updateSelf(req, res, next) {
 		if (isNaN(req.params.id)) {
-			res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		if (req.body.password) {
 			delete req.body.password;
@@ -64,7 +72,7 @@ class UserController extends BaseController {
 
 	async addManifest(req, res, next) {
 		if (isNaN(req.body.userId)) {
-			res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
 			const result = await this.service.addManifest(req);
@@ -99,15 +107,7 @@ class UserController extends BaseController {
 		}
 		try {
 			const result = await this.service.resetPassword(req);
-			if (result === SUCCESS) {
-				return res.status(SUCCESS_CODE).json({ status: 'ok', msg: messageConst.RESET_PASSWORD_SUCCESS });
-			}
-			if (result === NOT_FOUND) {
-				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
-			}
-			if (result === CATCH_ERROR) {
-				return res.status(SERVER_ERROR_CODE).json({ msg: messageConst.SERVER_ERROR });
-			}
+			UserController.checkServiceResult(result, res, 'Vui lòng kiểm tra email và làm theo hướng dẫn');
 		} catch (e) {
 			handleError(e, res);
 		}

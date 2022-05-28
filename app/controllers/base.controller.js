@@ -1,9 +1,11 @@
 const { handleError } = require('../services/handleError.util-service');
-const { messageConst, statusCode } = require('../constant');
+const { messageConst, statusCode, functionReturnCode } = require('../constant');
 const Exception = require('../models/exception.util-model');
 const { sequelize, Permission } = require('../models/index.model');
 const { QueryTypes } = require('sequelize');
-const md5 = require('md5');
+
+const { SERVER_ERROR_CODE, BAD_REQUEST_CODE, SUCCESS_CODE } = statusCode;
+const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID } = functionReturnCode;
 
 class BaseController {
 	constructor(service) {
@@ -27,6 +29,18 @@ class BaseController {
 					mapToModel: true, // pass true here if you have any mapped fields
 				},
 			);
+		}
+	}
+
+	static checkServiceResult(result, res, successMsg) {
+		if (result === SUCCESS) {
+			return res.status(SUCCESS_CODE).json({ status: 'ok', msg: successMsg || 'Thành công' });
+		}
+		if (result === NOT_FOUND) {
+			return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
+		}
+		if (result === CATCH_ERROR) {
+			return res.status(SERVER_ERROR_CODE).json({ msg: messageConst.SERVER_ERROR });
 		}
 	}
 

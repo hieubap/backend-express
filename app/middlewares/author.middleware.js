@@ -26,6 +26,7 @@ async function checkResourceOwner(req, res, next, isRequired) {
 	} else {
 		if (isRequired) {
 			res.status(statusCode.NOT_AUTHOR_CODE).json({ msg: messageConst.NO_AUTHORIZE });
+			return;
 		}
 		next();
 	}
