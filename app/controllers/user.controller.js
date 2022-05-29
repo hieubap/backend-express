@@ -8,6 +8,8 @@ const md5 = require('md5');
 const { sendMail, resetPassTemplate } = require('../config/mail.config');
 const jwtModel = require('../models/jwt.util-model');
 const { sequelize, UserRefManifest } = require('../models/index.model');
+const Exception = require('../models/exception.util-model');
+const { Op } = require('sequelize');
 
 const {
 	SERVER_ERROR_CODE,
@@ -27,22 +29,75 @@ class UserController extends BaseController {
 	}
 
 	// Overide method or create new
-	async insert(req, res, next) {
+	async insert(userType, req, res, next) {
 		try {
-			const result = await this.service.insert(req, res);
+			const result = await this.service.insert(userType, req, res);
 			UserController.checkServiceResult(result, res, 'Thêm đối người dùng thành công');
 		} catch (e) {
 			handleError(e, res);
 		}
 	}
 
-	async update(req, res, next) {
+	async update(userType, req, res, next) {
 		if (isNaN(req.params.id)) {
 			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
-			const result = await this.service.update(req, res);
+			const result = await this.service.update(userType, req, res);
 			UserController.checkServiceResult(result, res, 'Chỉnh sửa người dùng thành công');
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
+	async detail(userType, req, res, next) {
+		if (isNaN(req.params.id)) {
+			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+		}
+		try {
+			const result = await this.service.detail(userType, req.params.id);
+			return res.status(statusCode.SUCCESS_CODE).json(result);
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
+	async delete(userType, req, res, next) {
+		if (isNaN(req.params.id)) {
+			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+		}
+		try {
+			await this.service.delete(userType, req.params.id);
+			return res
+				.status(statusCode.DELETED_CODE)
+				.json({ msg: messageConst.DELETE_SUCCESS, deleted_id: req.params.id });
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
+	async search(userType, req, res, next) {
+		try {
+			const { limit = 10, offset = 0, firstName, ...rest } = req.query;
+			if (isNaN(+limit) || isNaN(+offset)) {
+				throw new Exception(messageConst.PARAMS_NUMBER_REQUIRED, messageConst.PARAMS_NUMBER_REQUIRED);
+			}
+			Object.keys(rest).forEach((key) => {
+				rest[key] = {
+					[Op.like]: `${rest[key]}%`,
+				};
+			});
+			const result = await this.service.search({ ...rest, user_type_id: userType }, +offset, +limit);
+			return res.status(statusCode.SUCCESS_CODE).json(result);
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
+	async info(req, res, next) {
+		try {
+			const result = await this.service.info(req.id);
+			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);
 		}

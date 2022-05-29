@@ -1,13 +1,16 @@
 const { Permission } = require('../models/index.model');
-const BaseService = require('./base.service')
-
+const BaseService = require('./base.service');
 
 class PermissionService extends BaseService {
-  constructor() {
-    super(Permission);
-  }
+	constructor() {
+		super(Permission);
+	}
 
-  // more query
+	search(whereClause, offset = 0, limit = 10) {
+		return Permission.findAndCountAll({ where: {} });
+	}
+
+	// more query
 }
 
 module.exports = new PermissionService();

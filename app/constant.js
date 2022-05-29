@@ -29,7 +29,7 @@ const errorCode = {
 const statusCode = {
 	SUCCESS_CODE: 200,
 	CREATED_CODE: 201,
-	DELETED_CODE: 204,
+	DELETED_CODE: 202,
 	SERVER_ERROR_CODE: 500,
 	BAD_REQUEST_CODE: 400,
 	NOT_FOUND_CODE: 404,
@@ -43,9 +43,31 @@ const functionReturnCode = {
 	EXPIRED: -2,
 	NOT_FOUND: -3,
 };
+const appUserTypeConst = {
+	admin: 1,
+	teacher: 2,
+	blogger: 3,
+	customer: 4,
+	sensorOwner: 5,
+};
+const appPermissionConst = {
+	CREATE_CUSTOMER: 'CREATE_CUSTOMER',
+	UPDATE_CUSTOMER: 'UPDATE_CUSTOMER',
+	DETAIL_CUSTOMER: 'DETAIL_CUSTOMER',
+	DELETE_CUSTOMER: 'DELETE_CUSTOMER',
+	SEARCH_CUSTOMER: 'SEARCH_CUSTOMER',
+	CREATE_ADMIN: 'CREATE_ADMIN',
+	UPDATE_ADMIN: 'UPDATE_ADMIN',
+	DETAIL_ADMIN: 'DETAIL_ADMIN',
+	DELETE_ADMIN: 'DELETE_ADMIN',
+	SEARCH_ADMIN: 'SEARCH_ADMIN',
+};
+
 Object.freeze(messageConst);
 Object.freeze(errorCode);
 Object.freeze(statusCode);
 Object.freeze(functionReturnCode);
+Object.freeze(appUserTypeConst);
+Object.freeze(appPermissionConst);
 
-module.exports = { messageConst, errorCode, statusCode, functionReturnCode };
+module.exports = { messageConst, errorCode, statusCode, functionReturnCode, appUserTypeConst, appPermissionConst };

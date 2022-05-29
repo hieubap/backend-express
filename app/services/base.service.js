@@ -14,7 +14,6 @@ class BaseService {
 				if (value.startsWith('%') || value.endsWith('%')) {
 					transformWhereClause[key] = {
 						[Op.like]: value,
-						deleteAt: null,
 					};
 				}
 				// more if block
