@@ -103,6 +103,10 @@ module.exports = (sequelize) => {
 			updated_id: {
 				type: DataTypes.INTEGER,
 			},
+			user_type_id: {
+				type: DataTypes.INTEGER,
+				defaultValue: 4,
+			},
 		},
 		{
 			defaultScope: {
@@ -129,7 +133,7 @@ module.exports = (sequelize) => {
 			updatedAt: 'updated_at',
 			deletedAt: 'deleted_at',
 			sequelize,
-			modelName: 'user',
+			modelName: 'User',
 			tableName: 'user',
 		},
 	);

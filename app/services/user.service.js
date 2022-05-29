@@ -14,46 +14,37 @@ class UserService extends BaseService {
 	}
 
 	async insert(req, res) {
-		const transaction = await sequelize.transaction();
+		const t = await sequelize.transaction();
 		try {
 			const user = { ...req.body, password: md5(req.body?.password) };
 			delete user.manifests;
 			if (req.id) {
 				user.created_id = req.id;
 			}
-			const createdModel = await User.create(user);
-			// them vao junction table
-			const manifests = req.body.manifests || [];
-			if (manifests.length !== 0) {
+			const createdUser = await User.create(user, { transaction: t });
+			if (req.body.manifests) {
 				const listManifest = await Manifest.findAll({
 					where: {
 						id: {
-							[Op.in]: manifests,
+							[Op.in]: req.body.manifests || [],
 						},
+						user_type_id: createdUser.user_type_id,
 					},
 				});
-				if (listManifest.length !== manifests.length) {
-					return functionReturnCode.NOT_FOUND;
-				}
-				await UserRefManifest.bulkCreate(
-					manifests.map((manifest) => ({
-						user_id: createdModel.id,
-						manifest_id: manifest,
-						created_id: req.id,
-					})),
-				);
+				createdUser.setManifests(listManifest, { transaction: t });
 			}
-			await transaction.commit();
+
+			await t.commit();
 			return functionReturnCode.SUCCESS;
 		} catch (e) {
-			await transaction.rollback();
+			await t.rollback();
 			handleError(e, res);
 			return functionReturnCode.CATCH_ERROR;
 		}
 	}
 
 	async update(req, res) {
-		const transaction = await sequelize.transaction();
+		const t = await sequelize.transaction();
 		try {
 			const user = { ...req.body };
 			delete user.manifests;
@@ -65,7 +56,7 @@ class UserService extends BaseService {
 			// cho phep update ca user ko active
 			const oldUser = await User.scope('notDeleted').findByPk(req.params.id);
 			if (!oldUser) {
-				await transaction.rollback();
+				await t.rollback();
 				return functionReturnCode.NOT_FOUND;
 			}
 			await User.scope(null).update(
@@ -74,25 +65,25 @@ class UserService extends BaseService {
 					where: {
 						id: +req.params.id,
 					},
+					transaction: t,
 				},
 			);
-			const manifests = req.body.manifests || [];
-			if (manifests.length) {
-				await UserRefManifest.destroy({
-					where: { user_id: req.params.id },
+			if (req.body.manifests) {
+				const updatedUser = await User.scope('notDeleted').findByPk(req.params.id);
+				const manifests = await Manifest.findAll({
+					where: {
+						id: {
+							[Op.in]: req.body.manifests || [],
+						},
+						user_type_id: updatedUser.user_type_id,
+					},
 				});
-				await UserRefManifest.bulkCreate(
-					manifests.map((item) => ({
-						user_id: req.params.id,
-						manifest_id: item,
-						created_id: req.id,
-					})),
-				);
+				await updatedUser.setManifests(manifests, { transaction: t });
 			}
-			await transaction.commit();
+			await t.commit();
 			return functionReturnCode.SUCCESS;
 		} catch (e) {
-			await transaction.rollback();
+			await t.rollback();
 			handleError(e, res);
 			return functionReturnCode.CATCH_ERROR;
 		}

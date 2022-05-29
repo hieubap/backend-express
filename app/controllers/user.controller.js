@@ -70,21 +70,6 @@ class UserController extends BaseController {
 		return this.update(req, res, next);
 	}
 
-	async addManifest(req, res, next) {
-		if (isNaN(req.body.userId)) {
-			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
-		}
-		try {
-			const result = await this.service.addManifest(req);
-			if (result === functionReturnCode.NOT_FOUND) {
-				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
-			}
-			return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.BATCH_INSERT_SUCCESS });
-		} catch (e) {
-			handleError(e, res);
-		}
-	}
-
 	async changePassword(req, res, next) {
 		if (!req.body?.oldPassword || !req.body?.newPassword) {
 			return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.BAD_PARAMETER });

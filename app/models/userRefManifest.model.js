@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
 			updatedAt: 'updated_at',
 			deletedAt: 'deleted_at',
 			sequelize,
-			modelName: 'userRefManifest',
+			modelName: 'UserRefManifest',
 			tableName: 'user_ref_manifest',
 			indexes: [
 				{

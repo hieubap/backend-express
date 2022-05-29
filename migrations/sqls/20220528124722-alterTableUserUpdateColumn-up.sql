@@ -3,13 +3,13 @@ alter table user
     drop column full_name;
 
 alter table user
-    modify phone_number varchar(20) collate utf32_unicode_ci null;
+    modify phone_number varchar(20) null;
 
 alter table user
-    add first_name varchar(255) not null;
+    add first_name varchar(255) collate utf32_unicode_ci not null;
 
 alter table user
-    add last_name varchar(255) not null;
+    add last_name varchar(255) collate utf32_unicode_ci not null;
 
 alter table user
     add gender tinyint null;
