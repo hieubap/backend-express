@@ -42,7 +42,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	});
 	!options.detail.isHide &&
 		router.get(
-			`/detail${options.search.extraRoute || ''}/:id`,
+			`/detail/:id`,
 			(req, res, next) => authenMiddle(req, res, next),
 			(req, res, next) => checkPermission(options.detail.permission, req, res, next),
 			(req, res, next) => {
@@ -52,7 +52,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 
 	!options.search.isHide &&
 		router.get(
-			'/search' + options.search.extraRoute || '',
+			'/search',
 			(req, res, next) => authenMiddle(req, res, next),
 			(req, res, next) => checkPermission(options.search.permission, req, res, next),
 			(req, res, next) => {
@@ -62,7 +62,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 
 	!options.insert.isHide &&
 		router.post(
-			'/insert' + options.search.extraRoute || '',
+			'/insert',
 			(req, res, next) => authenMiddle(req, res, next),
 			(req, res, next) => checkPermission(options.insert.permission, req, res, next),
 			(req, res, next) => {
@@ -81,7 +81,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 
 	!options.update.isHide &&
 		router.put(
-			`/update${options.search.extraRoute || ''}/:id`,
+			`/update/:id`,
 			(req, res, next) => authenMiddle(req, res, next),
 			(req, res, next) => checkPermission(options.update.permission, req, res, next),
 			(req, res, next) => {
@@ -91,7 +91,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 
 	!options.delete.isHide &&
 		router.delete(
-			`/delete${options.search.extraRoute || ''}/:id`,
+			`/delete/:id`,
 			(req, res, next) => authenMiddle(req, res, next),
 			(req, res, next) => checkPermission(options.delete.permission, req, res, next),
 			(req, res, next) => {

@@ -6,22 +6,10 @@ class BaseService {
 	}
 
 	// ex : http://localhost:3001/address/search?address=%sydz%&limit=10&offset=0
-	search(whereClause /* object like {id : 1}*/, offset = 0, limit = 10) {
-		const transformWhereClause = {};
-		if (Object.keys(whereClause).length) {
-			Object.keys(whereClause).forEach((key) => {
-				const value = whereClause[key];
-				if (value.startsWith('%') || value.endsWith('%')) {
-					transformWhereClause[key] = {
-						[Op.like]: value,
-					};
-				}
-				// more if block
-			});
-		}
-
+	search(rest /* object like {id : 1}*/, offset = 0, limit = 10, excludeAttribute /* array*/) {
 		return this.model.findAndCountAll({
-			where: transformWhereClause,
+			where: rest,
+			attributes: { exclude: excludeAttribute },
 			offset,
 			limit,
 			order: [['updated_at', 'ASC']],

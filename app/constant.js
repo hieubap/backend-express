@@ -42,6 +42,7 @@ const functionReturnCode = {
 	SUCCESS: 1,
 	EXPIRED: -2,
 	NOT_FOUND: -3,
+	PARAM_REQUIRED: (name) => name,
 };
 const appUserTypeConst = {
 	admin: 1,
@@ -61,6 +62,11 @@ const appPermissionConst = {
 	DETAIL_ADMIN: 'DETAIL_ADMIN',
 	DELETE_ADMIN: 'DELETE_ADMIN',
 	SEARCH_ADMIN: 'SEARCH_ADMIN',
+	CREATE_MANIFEST: 'CREATE_MANIFEST',
+	UPDATE_MANIFEST: 'UPDATE_MANIFEST',
+	SEARCH_MANIFEST: 'SEARCH_MANIFEST',
+	DETAIL_MANIFEST: 'DETAIL_MANIFEST',
+	DELETE_MANIFEST: 'DELETE_MANIFEST',
 };
 
 Object.freeze(messageConst);

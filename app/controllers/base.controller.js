@@ -3,9 +3,10 @@ const { messageConst, statusCode, functionReturnCode } = require('../constant');
 const Exception = require('../models/exception.util-model');
 const { sequelize, Permission } = require('../models/index.model');
 const { QueryTypes } = require('sequelize');
+const { Op } = require('sequelize');
 
 const { SERVER_ERROR_CODE, BAD_REQUEST_CODE, SUCCESS_CODE } = statusCode;
-const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID } = functionReturnCode;
+const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID, PARAM_REQUIRED } = functionReturnCode;
 
 class BaseController {
 	constructor(service) {
@@ -42,6 +43,9 @@ class BaseController {
 		if (result === CATCH_ERROR) {
 			return res.status(SERVER_ERROR_CODE).json({ msg: messageConst.SERVER_ERROR });
 		}
+		if (isNaN(result)) {
+			return res.status(BAD_REQUEST_CODE).json({ msg: result + ' required' });
+		}
 	}
 
 	async search(req, res, next) {
@@ -50,7 +54,11 @@ class BaseController {
 			if (isNaN(+limit) || isNaN(+offset)) {
 				throw new Exception(messageConst.PARAMS_NUMBER_REQUIRED, messageConst.PARAMS_NUMBER_REQUIRED);
 			}
-
+			Object.keys(rest).forEach((key) => {
+				rest[key] = {
+					[Op.like]: `${rest[key]}%`,
+				};
+			});
 			const result = await this.service.search(rest, +offset, +limit);
 			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {

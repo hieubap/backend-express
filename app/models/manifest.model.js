@@ -5,8 +5,26 @@ module.exports = (sequelize) => {
 
 	Manifest.init(
 		{
-			role_name: DataTypes.STRING(20),
-			content: DataTypes.STRING(100),
+			role_name: {
+				allowNull: false,
+				type: DataTypes.STRING(20),
+				validate: {
+					len: {
+						args: [0, 20],
+						msg: 'Tên quyền hạn có độ dài tối đa 20 ký tự',
+					},
+					notNull: 'tên quyền hạn không được bỏ trống',
+				},
+			},
+			content: {
+				type: DataTypes.STRING(100),
+				validate: {
+					len: {
+						args: [0, 100],
+						msg: 'Nội dung quyền hạn có độ dài tối đa 100 ký tự',
+					},
+				},
+			},
 			is_active: {
 				type: DataTypes.TINYINT,
 				defaultValue: 1,
@@ -16,6 +34,24 @@ module.exports = (sequelize) => {
 			},
 		},
 		{
+			defaultScope: {
+				where: {
+					is_active: 1,
+					deleted_at: null,
+				},
+			},
+			scopes: {
+				notDeleted: {
+					where: {
+						deleted_at: null,
+					},
+				},
+				active: {
+					where: {
+						is_active: 1,
+					},
+				},
+			},
 			timestamps: true,
 			paranoid: true,
 			createdAt: 'created_at',

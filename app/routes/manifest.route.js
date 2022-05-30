@@ -1,37 +1,46 @@
 const ManifestController = require('../controllers/manifest.controller');
 const { checkPermission } = require('../middlewares/author.middleware');
 const verifyToken = require('../middlewares/authen.middleware');
+const { appPermissionConst } = require('../constant');
 const manifestRoute = require('express').Router();
 
 const router = require('./base.route')(manifestRoute, ManifestController, {
 	detail: {
-		isHide: true,
+		isHide: false,
+		permission: appPermissionConst.DETAIL_MANIFEST,
 	},
 	search: {
 		isHide: false,
-		permission: 'SEARCH_MANIFEST',
+		permission: appPermissionConst.SEARCH_MANIFEST,
 	},
 	insert: {
 		isHide: true,
-		permission: 'CREATE_MANIFEST',
+		permission: appPermissionConst.CREATE_MANIFEST,
 	},
-	batchInsert: {
-		isHide: true,
-		permission: '',
-	},
+	// batchInsert: {
+	// 	isHide: true,
+	// 	permission: '',
+	// },
 	update: {
 		isHide: false,
-		permission: 'UPDATE_MANIFEST',
+		permission: appPermissionConst.UPDATE_MANIFEST,
 	},
 	delete: {
 		isHide: false,
-		permission: 'DELETE_MANIFEST',
+		permission: appPermissionConst.DELETE_MANIFEST,
 	},
 });
 manifestRoute.post(
 	'/insert',
 	(req, res, next) => verifyToken(req, res, next),
-	(req, res, next) => checkPermission('CREATE_MANIFEST', req, res, next),
-	(req, res, next) => ManifestController.addPermission(req, res, next),
+	(req, res, next) => checkPermission(appPermissionConst.CREATE_MANIFEST, req, res, next),
+	(req, res, next) => ManifestController.insert(req, res, next),
 );
+manifestRoute.put(
+	'/update/:id',
+	(req, res, next) => verifyToken(req, res, next),
+	(req, res, next) => checkPermission(appPermissionConst.UPDATE_MANIFEST, req, res, next),
+	(req, res, next) => ManifestController.update(req, res, next),
+);
+
 module.exports = router;
