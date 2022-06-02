@@ -16,6 +16,10 @@ const userAdminRouter = require('./admin.route')(userAdminRouterRaw, {
 		permission: appPermissionConst.UPDATE_ADMIN,
 		userType: appUserTypeConst.admin,
 	},
+	toggleActive: {
+		permission: appPermissionConst.ACTIVE_ADMIN,
+		userType: appUserTypeConst.admin,
+	},
 	delete: {
 		permission: appPermissionConst.DELETE_ADMIN,
 		userType: appUserTypeConst.admin,
@@ -37,6 +41,10 @@ const userCustomerRoute = require('./admin.route')(userCustomerRouterRaw, {
 	update: {
 		permission: appPermissionConst.UPDATE_CUSTOMER,
 		userType: appUserTypeConst.customer,
+	},
+	toggleActive: {
+		permission: appPermissionConst.ACTIVE_CUSTOMER,
+		userType: appUserTypeConst.admin,
 	},
 	delete: {
 		permission: appPermissionConst.DELETE_CUSTOMER,

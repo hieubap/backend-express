@@ -15,6 +15,12 @@ module.exports = (router, options) => {
 		(req, res, next) => checkPermission(options.update.permission, req, res, next),
 		(req, res, next) => UserController.update(options.update.userType, req, res, next),
 	);
+	router.put(
+		'/toggle-active/:id',
+		(req, res, next) => verifyToken(req, res, next),
+		(req, res, next) => checkPermission(options.changeStatus.permission, req, res, next),
+		(req, res, next) => UserController.toggleActive(options.update.userType, req, res, next),
+	);
 	router.get(
 		'/detail/:id',
 		(req, res, next) => verifyToken(req, res, next),

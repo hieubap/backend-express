@@ -107,12 +107,17 @@ module.exports = (sequelize) => {
 				type: DataTypes.INTEGER,
 				defaultValue: 4,
 			},
+			system_default: {
+				type: DataTypes.TINYINT,
+				defaultValue: 0,
+			},
 		},
 		{
 			defaultScope: {
 				where: {
 					is_active: 1,
 					deleted_at: null,
+					system_default: 0,
 				},
 			},
 			scopes: {
@@ -124,6 +129,11 @@ module.exports = (sequelize) => {
 				active: {
 					where: {
 						is_active: 1,
+					},
+				},
+				notSystemDefault: {
+					where: {
+						system_default: 0,
 					},
 				},
 			},

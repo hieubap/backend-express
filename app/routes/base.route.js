@@ -6,32 +6,30 @@ const defaultOptions = {
 	detail: {
 		isHide: false,
 		permission: false,
-		extraRoute: '',
 	},
 	search: {
 		isHide: false,
 		permission: false,
-		extraRoute: '',
 	},
 	insert: {
 		isHide: false,
 		permission: false,
-		extraRoute: '',
 	},
 	batchInsert: {
 		isHide: false,
 		permission: false,
-		extraRoute: '',
 	},
 	update: {
 		isHide: false,
 		permission: false,
-		extraRoute: '',
+	},
+	toggleActive: {
+		isHide: false,
+		permission: false,
 	},
 	delete: {
 		isHide: false,
 		permission: false,
-		extraRoute: '',
 	},
 };
 
@@ -88,7 +86,15 @@ module.exports = (router, controller, options = defaultOptions) => {
 				controller.update(req, res, next);
 			},
 		);
-
+	!options.toggleActive.isHide &&
+		router.put(
+			`/toggle-active/:id`,
+			(req, res, next) => authenMiddle(req, res, next),
+			(req, res, next) => checkPermission(options.toggleActive.permission, req, res, next),
+			(req, res, next) => {
+				controller.toggleActive(req, res, next);
+			},
+		);
 	!options.delete.isHide &&
 		router.delete(
 			`/delete/:id`,

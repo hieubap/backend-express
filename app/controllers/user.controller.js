@@ -78,16 +78,19 @@ class UserController extends BaseController {
 
 	async search(userType, req, res, next) {
 		try {
-			const { limit = 10, offset = 0, firstName, ...rest } = req.query;
-			if (isNaN(+limit) || isNaN(+offset)) {
+			const { size = 10, page = 1, firstName, ...rest } = req.query;
+			if (isNaN(+size) || isNaN(+page)) {
 				throw new Exception(messageConst.PARAMS_NUMBER_REQUIRED, messageConst.PARAMS_NUMBER_REQUIRED);
+			}
+			if (+page === 0) {
+				res.status(statusCode.BAD_REQUEST_CODE).json({ msg: messageConst.PAGE_START_FROM_ONE });
 			}
 			Object.keys(rest).forEach((key) => {
 				rest[key] = {
 					[Op.like]: `${rest[key]}%`,
 				};
 			});
-			const result = await this.service.search({ ...rest, user_type_id: userType }, +offset, +limit);
+			const result = await this.service.search({ ...rest, user_type_id: userType }, +page, +size, req.id);
 			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);

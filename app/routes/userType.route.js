@@ -22,6 +22,10 @@ const router = require('./base.route')(userTypeRoute, userTypeController, {
 		isHide: true,
 		permission: '',
 	},
+	toggleActive: {
+		isHide: true,
+		permission: '',
+	},
 	delete: {
 		isHide: true,
 		permission: '',

@@ -1,4 +1,4 @@
-const { User, sequelize, Manifest, Permission, UserRefManifest } = require('../models/index.model');
+const { User, sequelize, Manifest, Permission, UserType } = require('../models/index.model');
 const BaseService = require('./base.service');
 const md5 = require('md5');
 const jwtModel = require('../models/jwt.util-model');
@@ -19,6 +19,7 @@ class UserService extends BaseService {
 			const user = { ...req.body, password: md5(req.body?.password) };
 			user.user_type_id = userType;
 			delete user.manifests;
+			delete user.system_default;
 			if (req.id) {
 				user.created_id = req.id;
 			}
@@ -52,11 +53,12 @@ class UserService extends BaseService {
 			delete user.password;
 			delete user.email;
 			delete user.user_type_id;
+			delete user.system_default;
 			if (req.id) {
 				user.updated_id = req.id;
 			}
 			// cho phep update ca user ko active
-			const oldUser = await User.scope('notDeleted').findByPk(req.params.id, {
+			const oldUser = await User.scope('notDeleted', 'notSystemDefault').findByPk(req.params.id, {
 				where: { user_type_id: userType },
 			});
 			if (!oldUser) {
@@ -96,21 +98,27 @@ class UserService extends BaseService {
 	async detail(userType, id) {
 		return User.scope('notDeleted').findOne({
 			where: { id, user_type_id: userType },
-			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
-			include: {
-				model: Manifest,
-				attributes: ['id', 'role_name', 'content'],
-				include: {
-					model: Permission,
-					attributes: ['id', 'name'],
+			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active', 'user_type_id'] },
+			include: [
+				{
+					model: Manifest,
+					attributes: ['id', 'role_name', 'content'],
+					include: {
+						model: Permission,
+						attributes: ['id', 'name'],
+						through: {
+							attributes: [],
+						},
+					},
 					through: {
 						attributes: [],
 					},
 				},
-				through: {
-					attributes: [],
+				{
+					model: UserType,
+					attributes: ['name', 'vi_name'],
 				},
-			},
+			],
 		});
 	}
 
@@ -118,18 +126,18 @@ class UserService extends BaseService {
 		return User.destroy({ where: { id, user_type_id: userType } });
 	}
 
-	search(options, offset = 0, limit = 10) {
+	search(options, page = 1, size = 10, userId) {
 		return this.model.scope(null).findAndCountAll({
-			where: options,
-			offset,
-			limit,
+			where: { ...options, id: { [Op.ne]: userId || -1 } },
+			offset: (+page - 1) * size,
+			limit: size,
 			order: [['updated_at', 'ASC']],
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at'] },
 		});
 	}
 
 	async login(req) {
-		return User.findOne({
+		return User.scope(['notDeleted', 'active']).findOne({
 			where: { email: req.body?.email, password: md5(req.body?.password) },
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
 			include: {

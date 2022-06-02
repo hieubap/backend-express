@@ -6,9 +6,9 @@ class UserTypeService extends BaseService {
 		super(UserType);
 	}
 
-	search(whereClause, offset = 0, limit = 10) {
+	search(whereClause, page = 1, size = 10) {
 		const excludeAttribute = ['deleted_at'];
-		return super.search(whereClause, offset, limit, excludeAttribute);
+		return super.search(whereClause, page, size, excludeAttribute);
 	}
 }
 

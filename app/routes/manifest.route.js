@@ -25,6 +25,10 @@ const router = require('./base.route')(manifestRoute, ManifestController, {
 		isHide: false,
 		permission: appPermissionConst.UPDATE_MANIFEST,
 	},
+	toggleActive: {
+		isHide: false,
+		permission: appPermissionConst.ACTIVE_MANIFEST,
+	},
 	delete: {
 		isHide: false,
 		permission: appPermissionConst.DELETE_MANIFEST,

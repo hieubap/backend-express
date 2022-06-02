@@ -9,11 +9,11 @@ class ManifestService extends BaseService {
 		super(Manifest);
 	}
 
-	async search(rest /* object like {id : 1}*/, offset = 0, limit = 10) {
+	async search(rest /* object like {id : 1}*/, page = 1, size = 10) {
 		return Manifest.scope('notDeleted').findAndCountAll({
 			where: rest,
-			offset,
-			limit,
+			offset: (+page - 1) * size,
+			limit: size,
 			order: [['updated_at', 'ASC']],
 		});
 	}

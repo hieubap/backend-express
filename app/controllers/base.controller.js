@@ -50,16 +50,19 @@ class BaseController {
 
 	async search(req, res, next) {
 		try {
-			const { limit = 10, offset = 0, ...rest } = req.query;
-			if (isNaN(+limit) || isNaN(+offset)) {
+			const { size = 10, page = 1, ...rest } = req.query;
+			if (isNaN(+size) || isNaN(+page)) {
 				throw new Exception(messageConst.PARAMS_NUMBER_REQUIRED, messageConst.PARAMS_NUMBER_REQUIRED);
+			}
+			if (+page === 0) {
+				res.status(statusCode.BAD_REQUEST_CODE).json({ msg: messageConst.PAGE_START_FROM_ONE });
 			}
 			Object.keys(rest).forEach((key) => {
 				rest[key] = {
 					[Op.like]: `${rest[key]}%`,
 				};
 			});
-			const result = await this.service.search(rest, +offset, +limit);
+			const result = await this.service.search({ ...rest }, +page, +size);
 			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);
@@ -98,6 +101,19 @@ class BaseController {
 	async update(req, res, next) {
 		try {
 			await this.service.update(req.body, { id: req.params.id });
+			return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
+	async toggleActive(req, res, next) {
+		try {
+			const result = await this.service.toggleActive(req.params.id);
+			if (!result) {
+				return res.status(statusCode.NOT_FOUND_CODE).json({ msg: messageConst.NOT_FOUND });
+			}
+
 			return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
 		} catch (e) {
 			handleError(e, res);

@@ -17,6 +17,9 @@ const router = require('./base.route')(permissionRoute, permissionController, {
 	update: {
 		isHide: true,
 	},
+	toggleActive: {
+		isHide: true,
+	},
 	delete: {
 		isHide: true,
 	},
