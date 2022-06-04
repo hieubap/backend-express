@@ -94,6 +94,7 @@ class UserService extends BaseService {
 			return functionReturnCode.CATCH_ERROR;
 		}
 	}
+
 	async updateSelf(req, res) {
 		const user = { ...req.body };
 		delete user.manifests;
@@ -103,6 +104,7 @@ class UserService extends BaseService {
 		delete user.system_default;
 		return User.update(user, { where: { id: req.params.id } });
 	}
+
 	async detail(userType, id) {
 		return User.scope('notDeleted').findOne({
 			where: { id, user_type_id: userType },
@@ -149,7 +151,7 @@ class UserService extends BaseService {
 			where: { email: req.body?.email, password: md5(req.body?.password) },
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
 			include: {
-				model: Manifest,
+				model: Manifest.scope(['notDeleted', 'active']),
 				attributes: ['id', 'role_name', 'content'],
 				include: {
 					model: Permission,
@@ -170,7 +172,7 @@ class UserService extends BaseService {
 			where: { id },
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
 			include: {
-				model: Manifest,
+				model: Manifest.scope(['notDeleted', 'active']),
 				attributes: ['id', 'role_name', 'content'],
 				include: {
 					model: Permission,
