@@ -19,4 +19,7 @@ drop index user_name_uindex on user;
 
 alter table user
     drop column user_name;
+alter table user
+    drop column  full_name;
+
 

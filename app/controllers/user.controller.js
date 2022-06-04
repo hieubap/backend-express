@@ -39,7 +39,7 @@ class UserController extends BaseController {
 	}
 
 	async update(userType, req, res, next) {
-		if (isNaN(req.params.id)) {
+		if (isNaN(req.params?.id)) {
 			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
@@ -51,7 +51,7 @@ class UserController extends BaseController {
 	}
 
 	async detail(userType, req, res, next) {
-		if (isNaN(req.params.id)) {
+		if (isNaN(req.params?.id)) {
 			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
@@ -125,7 +125,16 @@ class UserController extends BaseController {
 		if (req.body.password) {
 			delete req.body.password;
 		}
-		return this.update(req, res, next);
+		try {
+			const result = await userService.updateSelf(req, res);
+			if (result) {
+				return res.status(SUCCESS_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
+			} else {
+				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.UPDATE_FAIL });
+			}
+		} catch (e) {
+			handleError(e, res);
+		}
 	}
 
 	async changePassword(req, res, next) {

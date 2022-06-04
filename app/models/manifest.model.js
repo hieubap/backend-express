@@ -32,12 +32,17 @@ module.exports = (sequelize) => {
 			user_type_id: {
 				type: DataTypes.INTEGER,
 			},
+			system_default: {
+				type: DataTypes.TINYINT,
+				defaultValue: 0,
+			},
 		},
 		{
 			defaultScope: {
 				where: {
 					is_active: 1,
 					deleted_at: null,
+					system_default: 0,
 				},
 			},
 			scopes: {
@@ -49,6 +54,11 @@ module.exports = (sequelize) => {
 				active: {
 					where: {
 						is_active: 1,
+					},
+				},
+				notSystemDefault: {
+					where: {
+						system_default: 0,
 					},
 				},
 			},

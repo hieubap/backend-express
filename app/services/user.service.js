@@ -94,7 +94,15 @@ class UserService extends BaseService {
 			return functionReturnCode.CATCH_ERROR;
 		}
 	}
-
+	async updateSelf(req, res) {
+		const user = { ...req.body };
+		delete user.manifests;
+		delete user.password;
+		delete user.email;
+		delete user.user_type_id;
+		delete user.system_default;
+		return User.update(user, { where: { id: req.params.id } });
+	}
 	async detail(userType, id) {
 		return User.scope('notDeleted').findOne({
 			where: { id, user_type_id: userType },
