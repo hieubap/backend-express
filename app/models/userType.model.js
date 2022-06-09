@@ -13,6 +13,18 @@ module.exports = (sequelize) => {
 			is_active: DataTypes.TINYINT(),
 		},
 		{
+			defaultScope: {
+				where: {
+					is_active: 1,
+				},
+			},
+			scopes: {
+				active: {
+					where: {
+						is_active: 1,
+					},
+				},
+			},
 			timestamps: true,
 			paranoid: true,
 			createdAt: 'created_at',

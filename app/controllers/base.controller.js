@@ -45,6 +45,8 @@ class BaseController {
 		}
 		if (isNaN(result)) {
 			return res.status(BAD_REQUEST_CODE).json({ msg: result + ' required' });
+		} else {
+			return res.status(204).json({});
 		}
 	}
 

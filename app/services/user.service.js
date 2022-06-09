@@ -55,11 +55,11 @@ class UserService extends BaseService {
 			delete user.user_type_id;
 			delete user.system_default;
 			if (req.id) {
-				user.updated_id = req.id;
+				user.updated_id = +req.id;
 			}
 			// cho phep update ca user ko active
-			const oldUser = await User.scope('notDeleted', 'notSystemDefault').findByPk(req.params.id, {
-				where: { user_type_id: userType },
+			const oldUser = await User.scope('notSystemDefault').findByPk(req.params.id, {
+				where: { user_type_id: +userType },
 			});
 			if (!oldUser) {
 				await t.rollback();
@@ -75,7 +75,7 @@ class UserService extends BaseService {
 				},
 			);
 			if (req.body.manifests) {
-				const updatedUser = await User.scope('notDeleted').findByPk(req.params.id);
+				const updatedUser = await User.scope(null).findByPk(req.params.id);
 				const manifests = await Manifest.findAll({
 					where: {
 						id: {
@@ -102,19 +102,26 @@ class UserService extends BaseService {
 		delete user.email;
 		delete user.user_type_id;
 		delete user.system_default;
-		return User.update(user, { where: { id: req.params.id } });
+		return User.scope(null).update(user, { where: { id: +req.params.id } });
+	}
+
+	async updateSelfAvatar(req, res) {
+		const avatar = req.file.location;
+		return User.scope(null).update({ avatar }, { where: { id: +req.params.id } });
 	}
 
 	async detail(userType, id) {
-		return User.scope('notDeleted').findOne({
-			where: { id, user_type_id: userType },
+		return User.scope(null).findOne({
+			where: { id: +id, user_type_id: +userType },
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active', 'user_type_id'] },
 			include: [
 				{
-					model: Manifest,
+					model: Manifest.scope('active'),
+					required: false,
 					attributes: ['id', 'role_name', 'content'],
 					include: {
 						model: Permission,
+						required: false,
 						attributes: ['id', 'name'],
 						through: {
 							attributes: [],
@@ -133,12 +140,12 @@ class UserService extends BaseService {
 	}
 
 	async delete(userType, id) {
-		return User.destroy({ where: { id, user_type_id: userType } });
+		return User.destroy({ where: { id: +id, user_type_id: +userType } });
 	}
 
 	search(options, page = 1, size = 10, userId) {
-		return this.model.scope(null).findAndCountAll({
-			where: { ...options, id: { [Op.ne]: userId || -1 } },
+		return User.scope(null).findAndCountAll({
+			where: { ...options, id: { [Op.ne]: +userId || -1 } },
 			offset: (+page - 1) * size,
 			limit: size,
 			order: [['updated_at', 'ASC']],
@@ -147,14 +154,16 @@ class UserService extends BaseService {
 	}
 
 	async login(req) {
-		return User.scope(['notDeleted', 'active']).findOne({
+		return User.scope('active').findOne({
 			where: { email: req.body?.email, password: md5(req.body?.password) },
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
 			include: {
-				model: Manifest.scope(['notDeleted', 'active']),
+				model: Manifest.scope('active'),
+				required: false,
 				attributes: ['id', 'role_name', 'content'],
 				include: {
 					model: Permission,
+					required: false,
 					attributes: ['id', 'name', 'vi_name'],
 					through: {
 						attributes: [],
@@ -168,14 +177,16 @@ class UserService extends BaseService {
 	}
 
 	async info(id) {
-		return User.scope('notDeleted').findOne({
-			where: { id },
+		return User.scope(null).findOne({
+			where: { id: +id },
 			attributes: { exclude: ['token', 'token_reset_pw', 'password', 'deleted_at', 'is_active'] },
 			include: {
-				model: Manifest.scope(['notDeleted', 'active']),
+				model: Manifest.scope(['active']),
+				required: false,
 				attributes: ['id', 'role_name', 'content'],
 				include: {
 					model: Permission,
+					required: false,
 					attributes: ['id', 'name', 'vi_name'],
 					through: {
 						attributes: [],
@@ -190,9 +201,9 @@ class UserService extends BaseService {
 
 	async updatePassword(req) {
 		const id = req.id;
-		const user = await this.findOne({ id });
+		const user = await this.findOne({ id: +id });
 		if (md5(req.body?.oldPassword) === user.password) {
-			return this.update({ ...user, password: md5(req.body?.newPassword) }, { id });
+			return this.update({ ...user, password: md5(req.body?.newPassword) }, { id: +id });
 		} else return null;
 	}
 
@@ -227,12 +238,12 @@ class UserService extends BaseService {
 		if (new Date().getTime() / 1000 > exp) {
 			return functionReturnCode.EXPIRED;
 		}
-		const user = await this.findOne({ token_reset_pw: tokenReset, id });
+		const user = await this.findOne({ token_reset_pw: tokenReset, id: +id });
 		if (!user) {
 			return functionReturnCode.NOT_FOUND;
 		} else {
 			try {
-				this.update({ password: md5(newPass) }, { id });
+				this.update({ password: md5(newPass) }, { id: +id });
 				return functionReturnCode.SUCCESS;
 			} catch (e) {
 				return functionReturnCode.CATCH_ERROR;

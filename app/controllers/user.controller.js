@@ -10,6 +10,7 @@ const jwtModel = require('../models/jwt.util-model');
 const { sequelize, UserRefManifest } = require('../models/index.model');
 const Exception = require('../models/exception.util-model');
 const { Op } = require('sequelize');
+const { isEmpty } = require('../utils');
 
 const {
 	SERVER_ERROR_CODE,
@@ -31,7 +32,7 @@ class UserController extends BaseController {
 	// Overide method or create new
 	async insert(userType, req, res, next) {
 		try {
-			const result = await this.service.insert(userType, req, res);
+			const result = await userService.insert(userType, req, res);
 			UserController.checkServiceResult(result, res, 'Thêm đối người dùng thành công');
 		} catch (e) {
 			handleError(e, res);
@@ -43,8 +44,23 @@ class UserController extends BaseController {
 			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
-			const result = await this.service.update(userType, req, res);
+			const result = await userService.update(userType, req, res);
 			UserController.checkServiceResult(result, res, 'Chỉnh sửa người dùng thành công');
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+	async updateAvatar(userType, req, res, next) {
+		if (isNaN(req.params?.id)) {
+			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+		}
+		try {
+			const result = await userService.updateSelfAvatar(req, res, next);
+			if (!isEmpty(result)) {
+				return res.status(SUCCESS_CODE).json({ msg: messageConst.UPDATE_PASSWORD_SUCCESS });
+			} else {
+				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.PASSWORD_WRONG });
+			}
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -55,7 +71,7 @@ class UserController extends BaseController {
 			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
-			const result = await this.service.detail(userType, req.params.id);
+			const result = await userService.detail(userType, req.params.id);
 			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);
@@ -67,7 +83,7 @@ class UserController extends BaseController {
 			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
-			await this.service.delete(userType, req.params.id);
+			await userService.delete(userType, +req.params.id);
 			return res
 				.status(statusCode.DELETED_CODE)
 				.json({ msg: messageConst.DELETE_SUCCESS, deleted_id: req.params.id });
@@ -90,7 +106,7 @@ class UserController extends BaseController {
 					[Op.like]: `${rest[key]}%`,
 				};
 			});
-			const result = await this.service.search({ ...rest, user_type_id: userType }, +page, +size, req.id);
+			const result = await userService.search({ ...rest, user_type_id: userType }, +page, +size, req.id);
 			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);
@@ -99,7 +115,7 @@ class UserController extends BaseController {
 
 	async info(req, res, next) {
 		try {
-			const result = await this.service.info(req.id);
+			const result = await userService.info(req.id);
 			return res.status(statusCode.SUCCESS_CODE).json(result);
 		} catch (e) {
 			handleError(e, res);
@@ -137,13 +153,32 @@ class UserController extends BaseController {
 		}
 	}
 
+	async updateSelfAvatar(req, res, next) {
+		if (isNaN(req.params.id)) {
+			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
+		}
+		if (req.body.password) {
+			delete req.body.password;
+		}
+		try {
+			const result = await userService.updateSelfAvatar(req, res);
+			if (!isEmpty(result)) {
+				return res.status(SUCCESS_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
+			} else {
+				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.UPDATE_FAIL });
+			}
+		} catch (e) {
+			handleError(e, res);
+		}
+	}
+
 	async changePassword(req, res, next) {
 		if (!req.body?.oldPassword || !req.body?.newPassword) {
 			return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
-			const result = await this.service.updatePassword(req);
-			if (result) {
+			const result = await userService.updatePassword(req);
+			if (!isEmpty(result)) {
 				return res.status(SUCCESS_CODE).json({ msg: messageConst.UPDATE_PASSWORD_SUCCESS });
 			} else {
 				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.PASSWORD_WRONG });
@@ -158,7 +193,7 @@ class UserController extends BaseController {
 			return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
-			const result = await this.service.resetPassword(req);
+			const result = await userService.resetPassword(req);
 			UserController.checkServiceResult(result, res, 'Vui lòng kiểm tra email và làm theo hướng dẫn');
 		} catch (e) {
 			handleError(e, res);

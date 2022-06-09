@@ -4,6 +4,7 @@ const manifestRouter = require('./manifest.route');
 const permissionRouter = require('./permission.route');
 const userTypeRouter = require('./userType.route');
 const { appUserTypeConst, appPermissionConst } = require('../constant');
+const { s3Upload } = require('../config/s3.config');
 const userAdminRouterRaw = require('express').Router();
 const userCustomerRouterRaw = require('express').Router();
 
@@ -67,6 +68,12 @@ const allAppRoute = (app) => {
 	app.use('/user', userRouter);
 	app.use('/manifest', manifestRouter);
 	app.use('/permission', permissionRouter);
+	// app.post('/upload', s3Upload.single('file'), (req, res, next) => {
+	// 	res.send({
+	// 		message: 'Uploaded!',
+	// 		urls: req.file.location,
+	// 	});
+	// });
 };
 
 module.exports = { allAppRoute };

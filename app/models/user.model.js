@@ -116,16 +116,10 @@ module.exports = (sequelize) => {
 			defaultScope: {
 				where: {
 					is_active: 1,
-					deleted_at: null,
 					system_default: 0,
 				},
 			},
 			scopes: {
-				notDeleted: {
-					where: {
-						deleted_at: null,
-					},
-				},
 				active: {
 					where: {
 						is_active: 1,
