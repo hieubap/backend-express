@@ -10,7 +10,7 @@ class ManifestService extends BaseService {
 	}
 
 	async search(rest /* object like {id : 1}*/, page = 1, size = 10) {
-		return Manifest.scope(['notDeleted', 'notSystemDefault']).findAndCountAll({
+		return Manifest.scope('notSystemDefault').findAndCountAll({
 			where: rest,
 			offset: (+page - 1) * size,
 			limit: size,

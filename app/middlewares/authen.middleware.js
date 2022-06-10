@@ -11,6 +11,7 @@ async function verifyToken(req, res, next) {
 		req.id = id;
 		next();
 	} catch (e) {
+		console.log(e);
 		res.status(statusCode.NOT_AUTHEN_CODE).json({ msg: messageConst.TOKEN_INVALID });
 	}
 }
