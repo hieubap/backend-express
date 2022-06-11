@@ -201,7 +201,7 @@ class UserService extends BaseService {
 
 	async updatePassword(req) {
 		const id = req.id;
-		const user = await this.findOne({ id: +id });
+		const user = await User.scope(null).findOne({ id: +id });
 		if (md5(req.body?.oldPassword) === user.password) {
 			return this.update({ ...user, password: md5(req.body?.newPassword) }, { id: +id });
 		} else return null;
@@ -209,12 +209,12 @@ class UserService extends BaseService {
 
 	async resetPassword(req) {
 		const { email } = req.body;
-		const user = await this.findOne({ email });
+		const user = await User.scope(null).findOne({ email });
 		if (user) {
 			const passWordReset = v4();
 			const tokenReset = jwtModel.genKeyResetPass(user, passWordReset);
 			try {
-				await this.update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
+				await User.scope(null).update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
 				const mailContent = await parseResetPassTemplate(
 					`${
 						process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.APP_SERVER_URL
@@ -238,12 +238,12 @@ class UserService extends BaseService {
 		if (new Date().getTime() / 1000 > exp) {
 			return functionReturnCode.EXPIRED;
 		}
-		const user = await this.findOne({ token_reset_pw: tokenReset, id: +id });
+		const user = await User.scope(null).findOne({ token_reset_pw: tokenReset, id: +id });
 		if (!user) {
 			return functionReturnCode.NOT_FOUND;
 		} else {
 			try {
-				this.update({ password: md5(newPass) }, { id: +id });
+				User.scope(null).update({ password: md5(newPass) }, { id: +id });
 				return functionReturnCode.SUCCESS;
 			} catch (e) {
 				return functionReturnCode.CATCH_ERROR;
