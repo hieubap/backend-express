@@ -81,7 +81,7 @@ const allAppRoute = (app) => {
 		(req, res, next) => authenMiddle(req, res, next),
 		s3Upload.single('file'),
 		(req, res, next) => {
-			if (!req.file.location) {
+			if (!req?.file?.location) {
 				res.status(500).json({
 					message: 'Upload failed!',
 				});
