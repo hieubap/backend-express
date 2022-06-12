@@ -1,14 +1,14 @@
 const userService = require('../services/user.service');
 const BaseController = require('./base.controller');
 const { handleError } = require('../services/handleError.util-service');
-const jwtUtilModel = require('../models/jwt.util-model');
+const jwtUtilModel = require('../models/util-model/jwt.util-model');
 const { Manifest, Permission } = require('../models/index.model');
 const { messageConst, statusCode, functionReturnCode } = require('../constant');
 const md5 = require('md5');
 const { sendMail, resetPassTemplate } = require('../config/mail.config');
-const jwtModel = require('../models/jwt.util-model');
+const jwtModel = require('../models/util-model/jwt.util-model');
 const { sequelize, UserRefManifest } = require('../models/index.model');
-const Exception = require('../models/exception.util-model');
+const Exception = require('../models/util-model/exception.util-model');
 const { Op } = require('sequelize');
 const { isEmpty } = require('../utils');
 
@@ -103,7 +103,7 @@ class UserController extends BaseController {
 			}
 			Object.keys(rest).forEach((key) => {
 				rest[key] = {
-					[Op.like]: `${rest[key]}%`,
+					[Op.like]: `%${rest[key]}%`,
 				};
 			});
 			const result = await userService.search({ ...rest, user_type_id: userType }, +page, +size, req.id);

@@ -1,4 +1,4 @@
-const jwtUtilModel = require('../models/jwt.util-model');
+const jwtUtilModel = require('../models/util-model/jwt.util-model');
 const { messageConst, statusCode } = require('../constant');
 
 async function verifyToken(req, res, next) {

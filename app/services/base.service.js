@@ -1,4 +1,5 @@
 const { Op } = require('sequelize');
+const { isEmpty } = require('../utils');
 
 class BaseService {
 	constructor(Model) {
@@ -32,24 +33,24 @@ class BaseService {
 		return this.model.bulkCreate(listModel, { validate: true });
 	}
 
-	update(updateModel, whereClause) {
+	async update(updateModel, whereClause) {
+		const modelObj = await this.model.findByPk(whereClause.id);
+		if (!modelObj) return null;
 		return this.model.update(updateModel, { where: { ...whereClause } });
 	}
 
 	async toggleActive(id) {
-		const modelObj = await this.model.scope('notDeleted').findByPk(id);
+		const modelObj = await this.model.findByPk(id);
 		if (!modelObj) return null;
-		return this.model
-			.scope('notDeleted')
-			.update({ is_active: ((modelObj.is_active || 0) + 1) % 2 }, { where: { id } });
+		return this.model.update({ is_active: ((modelObj.is_active || 0) + 1) % 2 }, { where: { id } });
 	}
 
 	// will update fiel deleted_at because enable paranoid
-	delete(whereClause) {
+	async delete(whereClause) {
+		const modelObj = await this.model.findByPk(whereClause.id);
+		if (!modelObj) return null;
 		return this.model.destroy({ where: { ...whereClause } });
 	}
-
-	changeStatusActive(id, status) {}
 }
 
 module.exports = BaseService;

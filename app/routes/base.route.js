@@ -1,4 +1,4 @@
-const authenMiddle = require('../middlewares/authen.middleware');
+const verifyToken = require('../middlewares/authen.middleware');
 const { checkPermission } = require('../middlewares/author.middleware');
 const logger = require('../config/loggerWinston');
 
@@ -41,7 +41,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	!options.detail.isHide &&
 		router.get(
 			`/detail/:id`,
-			(req, res, next) => authenMiddle(req, res, next),
+			(req, res, next) => verifyToken(req, res, next),
 			(req, res, next) => checkPermission(options.detail.permission, req, res, next),
 			(req, res, next) => {
 				controller.detail(req, res, next);
@@ -51,7 +51,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	!options.search.isHide &&
 		router.get(
 			'/search',
-			(req, res, next) => authenMiddle(req, res, next),
+			(req, res, next) => verifyToken(req, res, next),
 			(req, res, next) => checkPermission(options.search.permission, req, res, next),
 			(req, res, next) => {
 				controller.search(req, res, next);
@@ -61,7 +61,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	!options.insert.isHide &&
 		router.post(
 			'/insert',
-			(req, res, next) => authenMiddle(req, res, next),
+			(req, res, next) => verifyToken(req, res, next),
 			(req, res, next) => checkPermission(options.insert.permission, req, res, next),
 			(req, res, next) => {
 				controller.insert(req, res, next);
@@ -70,7 +70,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	// !options.batchInsert.isHide &&
 	// 	router.post(
 	// 		'/batch-insert',
-	// 		(req, res, next) => authenMiddle(req, res, next),
+	// 		(req, res, next) => verifyToken(req, res, next),
 	// 		(req, res, next) => checkPermission(options.batchInsert.permission, req, res, next),
 	// 		(req, res, next) => {
 	// 			controller.batchInsert(req, res, next);
@@ -80,7 +80,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	!options.update.isHide &&
 		router.put(
 			`/update/:id`,
-			(req, res, next) => authenMiddle(req, res, next),
+			(req, res, next) => verifyToken(req, res, next),
 			(req, res, next) => checkPermission(options.update.permission, req, res, next),
 			(req, res, next) => {
 				controller.update(req, res, next);
@@ -89,7 +89,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	!options.toggleActive.isHide &&
 		router.put(
 			`/toggle-active/:id`,
-			(req, res, next) => authenMiddle(req, res, next),
+			(req, res, next) => verifyToken(req, res, next),
 			(req, res, next) => checkPermission(options.toggleActive.permission, req, res, next),
 			(req, res, next) => {
 				controller.toggleActive(req, res, next);
@@ -98,7 +98,7 @@ module.exports = (router, controller, options = defaultOptions) => {
 	!options.delete.isHide &&
 		router.delete(
 			`/delete/:id`,
-			(req, res, next) => authenMiddle(req, res, next),
+			(req, res, next) => verifyToken(req, res, next),
 			(req, res, next) => checkPermission(options.delete.permission, req, res, next),
 			(req, res, next) => {
 				controller.delete(req, res, next);

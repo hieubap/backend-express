@@ -1,7 +1,7 @@
 const { User, sequelize, Manifest, Permission, UserType } = require('../models/index.model');
 const BaseService = require('./base.service');
 const md5 = require('md5');
-const jwtModel = require('../models/jwt.util-model');
+const jwtModel = require('../models/util-model/jwt.util-model');
 const { sendMail, parseResetPassTemplate } = require('../config/mail.config');
 const { v4 } = require('uuid');
 const { functionReturnCode } = require('../constant');
@@ -201,20 +201,20 @@ class UserService extends BaseService {
 
 	async updatePassword(req) {
 		const id = req.id;
-		const user = await User.scope(null).findOne({ id: +id });
+		const user = await User.scope(null).findByPk(+id);
 		if (md5(req.body?.oldPassword) === user.password) {
-			return this.update({ ...user, password: md5(req.body?.newPassword) }, { id: +id });
+			return User.update({ ...user, password: md5(req.body?.newPassword) }, { where: { id } });
 		} else return null;
 	}
 
 	async resetPassword(req) {
 		const { email } = req.body;
-		const user = await User.scope(null).findOne({ email });
+		const user = await User.scope(null).findOne({ where: { email } });
 		if (user) {
 			const passWordReset = v4();
 			const tokenReset = jwtModel.genKeyResetPass(user, passWordReset);
 			try {
-				await User.scope(null).update({ ...user, token_reset_pw: tokenReset }, { id: user.id });
+				await User.scope(null).update({ ...user, token_reset_pw: tokenReset }, { where: { id: user.id } });
 				const mailContent = await parseResetPassTemplate(
 					`${
 						process.env.STATUS === 'development' ? 'http://localhost:3001' : process.env.APP_SERVER_URL

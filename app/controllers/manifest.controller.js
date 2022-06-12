@@ -11,7 +11,7 @@ class ManifestController extends BaseController {
 
 	async insert(req, res, next) {
 		try {
-			const result = await manifestService.insert(req);
+			const result = await manifestService.insert(req, res);
 			BaseController.checkServiceResult(result, res, 'Thêm quyền hạn thành công');
 		} catch (e) {
 			handleError(e, res);
@@ -23,7 +23,7 @@ class ManifestController extends BaseController {
 			return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_PARAMETER });
 		}
 		try {
-			const result = await manifestService.update(req);
+			const result = await manifestService.update(req, res);
 			BaseController.checkServiceResult(result, res, 'Cập nhật quyền hạn thành công');
 		} catch (e) {
 			handleError(e, res);

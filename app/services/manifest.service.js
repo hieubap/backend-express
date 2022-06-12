@@ -37,7 +37,7 @@ class ManifestService extends BaseService {
 		});
 	}
 
-	async insert(req) {
+	async insert(req, res) {
 		if (!req.body.user_type_id) {
 			return functionReturnCode.PARAM_REQUIRED('user_type_id');
 		}
@@ -70,11 +70,12 @@ class ManifestService extends BaseService {
 			return functionReturnCode.SUCCESS;
 		} catch (e) {
 			await t.rollback();
+			handleError(e, res);
 			return functionReturnCode.CATCH_ERROR;
 		}
 	}
 
-	async update(req) {
+	async update(req, res) {
 		if (!req.body.user_type_id) {
 			return functionReturnCode.PARAM_REQUIRED('user_type_id');
 		}
@@ -118,6 +119,7 @@ class ManifestService extends BaseService {
 			return functionReturnCode.SUCCESS;
 		} catch (e) {
 			await t.rollback();
+			handleError(e, res);
 			return functionReturnCode.CATCH_ERROR;
 		}
 	}

@@ -1,12 +1,13 @@
 const { handleError } = require('../services/handleError.util-service');
 const { messageConst, statusCode, functionReturnCode } = require('../constant');
-const Exception = require('../models/exception.util-model');
+const Exception = require('../models/util-model/exception.util-model');
 const { sequelize, Permission } = require('../models/index.model');
 const { QueryTypes } = require('sequelize');
 const { Op } = require('sequelize');
+const { isEmpty } = require('../utils');
 
 const { SERVER_ERROR_CODE, BAD_REQUEST_CODE, SUCCESS_CODE } = statusCode;
-const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID, PARAM_REQUIRED } = functionReturnCode;
+const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID, PARAM_REQUIRED, REF_NOT_FOUND } = functionReturnCode;
 
 class BaseController {
 	constructor(service) {
@@ -40,6 +41,9 @@ class BaseController {
 		if (result === NOT_FOUND) {
 			return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
 		}
+		if (result === REF_NOT_FOUND) {
+			return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.REF_NOT_FOUND });
+		}
 		if (result === CATCH_ERROR) {
 			return res.status(SERVER_ERROR_CODE).json({ msg: messageConst.SERVER_ERROR });
 		}
@@ -61,7 +65,7 @@ class BaseController {
 			}
 			Object.keys(rest).forEach((key) => {
 				rest[key] = {
-					[Op.like]: `${rest[key]}%`,
+					[Op.like]: `%${rest[key]}%`,
 				};
 			});
 			const result = await this.service.search({ ...rest }, +page, +size);
@@ -82,6 +86,9 @@ class BaseController {
 
 	async insert(req, res, next) {
 		try {
+			if (req.id) {
+				req.body.created_id = req.id;
+			}
 			const createdModel = await this.service.insert(req.body);
 			return res
 				.status(statusCode.CREATED_CODE)
@@ -102,8 +109,15 @@ class BaseController {
 
 	async update(req, res, next) {
 		try {
-			await this.service.update(req.body, { id: req.params.id });
-			return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
+			if (req.id) {
+				req.body.updated_id = req.id;
+			}
+			const result = await this.service.update(req.body, { id: req.params.id });
+			if (!isEmpty(result)) {
+				return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
+			} else {
+				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
+			}
 		} catch (e) {
 			handleError(e, res);
 		}
@@ -124,10 +138,14 @@ class BaseController {
 
 	async delete(req, res, next) {
 		try {
-			await this.service.delete({ id: req.params.id });
-			return res
-				.status(statusCode.DELETED_CODE)
-				.json({ msg: messageConst.DELETE_SUCCESS, deleted_id: req.params.id });
+			const result = await this.service.delete({ id: req.params.id });
+			if (!isEmpty(result)) {
+				return res
+					.status(statusCode.DELETED_CODE)
+					.json({ msg: messageConst.DELETE_SUCCESS, deleted_id: req.params.id });
+			} else {
+				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
+			}
 		} catch (e) {
 			handleError(e, res);
 		}

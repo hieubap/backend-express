@@ -1,8 +1,11 @@
-// import addressRouter from "./address.route";
 const userRouter = require('./user.route');
 const manifestRouter = require('./manifest.route');
 const permissionRouter = require('./permission.route');
 const userTypeRouter = require('./userType.route');
+const locationRouter = require('./location.route');
+const sensorDeviceRouter = require('./sensorDevice.route');
+const dashboardRouter = require('./dashboard.route');
+
 const { appUserTypeConst, appPermissionConst } = require('../constant');
 const { s3Upload } = require('../config/s3.config');
 const authenMiddle = require('../middlewares/authen.middleware');
@@ -69,6 +72,10 @@ const allAppRoute = (app) => {
 	app.use('/user', userRouter);
 	app.use('/manifest', manifestRouter);
 	app.use('/permission', permissionRouter);
+	app.use('/location', locationRouter);
+	app.use('/sensor', sensorDeviceRouter);
+	app.use('/overview', dashboardRouter);
+
 	app.post(
 		'/upload-image',
 		(req, res, next) => authenMiddle(req, res, next),

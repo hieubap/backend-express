@@ -1,8 +1,11 @@
 function isEmpty(variable) {
-	if (variable === []) return true;
-	if (variable === {}) return true;
 	if (typeof variable === 'string') variable.trim();
-	return !variable;
+	if ([null, undefined, {}, [], ''].includes(variable)) return true;
+	if (variable?.length === 0) return true;
+	if (typeof variable === 'object' && Object.keys(variable)?.length === 0) {
+		return true;
+	}
+	return false;
 }
 
 module.exports = {

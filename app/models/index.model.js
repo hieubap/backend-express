@@ -22,6 +22,8 @@ const db = {
 	Manifest: require('./manifest.model')(sequelize),
 	Permission: require('./permission.model')(sequelize),
 	UserRefManifest: require('./userRefManifest.model')(sequelize),
+	Location: require('./location.model')(sequelize),
+	SensorDevice: require('./sensorDevice.model')(sequelize),
 
 	testConnect: async () => {
 		try {
@@ -35,7 +37,7 @@ const db = {
 };
 
 // define association between all model
-const { User, Manifest, Permission, UserRefManifest, UserType } = db;
+const { User, Manifest, Permission, UserRefManifest, UserType, Location, SensorDevice } = db;
 User.belongsToMany(Manifest, {
 	through: UserRefManifest,
 	scope: null,
@@ -65,6 +67,12 @@ User.belongsTo(UserType, {
 });
 Manifest.belongsTo(UserType, {
 	foreignKey: 'user_type_id',
+});
+SensorDevice.belongsTo(Location, {
+	foreignKey: 'location_id',
+});
+Location.hasMany(SensorDevice, {
+	foreignKey: 'location_id',
 });
 
 module.exports = db;
