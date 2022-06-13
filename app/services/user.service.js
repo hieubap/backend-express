@@ -201,10 +201,15 @@ class UserService extends BaseService {
 
 	async updatePassword(req) {
 		const id = req.id;
-		const user = await User.scope(null).findByPk(+id);
-		if (md5(req.body?.oldPassword) === user.password) {
-			return User.update({ ...user, password: md5(req.body?.newPassword) }, { where: { id } });
-		} else return null;
+		const user = await User.scope(null).findOne({
+			where: {
+				id,
+				password: md5(req.body?.oldPassword),
+			},
+		});
+		if (user) {
+			return User.scope(null).update({ ...user, password: md5(req.body?.newPassword) }, { where: { id } });
+		} else return [0];
 	}
 
 	async resetPassword(req) {

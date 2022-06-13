@@ -7,7 +7,10 @@ function isEmpty(variable) {
 	}
 	return false;
 }
-
+function isUpdateHasNoEffect(result) {
+	return result[0] === 0;
+}
 module.exports = {
 	isEmpty,
+	isUpdateHasNoEffect,
 };

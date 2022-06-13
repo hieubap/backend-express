@@ -4,7 +4,7 @@ const Exception = require('../models/util-model/exception.util-model');
 const { sequelize, Permission } = require('../models/index.model');
 const { QueryTypes } = require('sequelize');
 const { Op } = require('sequelize');
-const { isEmpty } = require('../utils');
+const { isEmpty, isUpdateHasNoEffect } = require('../utils');
 
 const { SERVER_ERROR_CODE, BAD_REQUEST_CODE, SUCCESS_CODE } = statusCode;
 const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID, PARAM_REQUIRED, REF_NOT_FOUND } = functionReturnCode;
@@ -113,7 +113,7 @@ class BaseController {
 				req.body.updated_id = req.id;
 			}
 			const result = await this.service.update(req.body, { id: req.params.id });
-			if (!isEmpty(result)) {
+			if (!isUpdateHasNoEffect(result)) {
 				return res.status(statusCode.CREATED_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
 			} else {
 				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.NOT_FOUND });
@@ -139,7 +139,7 @@ class BaseController {
 	async delete(req, res, next) {
 		try {
 			const result = await this.service.delete({ id: req.params.id });
-			if (!isEmpty(result)) {
+			if (!result) {
 				return res
 					.status(statusCode.DELETED_CODE)
 					.json({ msg: messageConst.DELETE_SUCCESS, deleted_id: req.params.id });

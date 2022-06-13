@@ -10,7 +10,7 @@ const jwtModel = require('../models/util-model/jwt.util-model');
 const { sequelize, UserRefManifest } = require('../models/index.model');
 const Exception = require('../models/util-model/exception.util-model');
 const { Op } = require('sequelize');
-const { isEmpty } = require('../utils');
+const { isEmpty, isUpdateHasNoEffect } = require('../utils');
 
 const {
 	SERVER_ERROR_CODE,
@@ -56,7 +56,7 @@ class UserController extends BaseController {
 		}
 		try {
 			const result = await userService.updateSelfAvatar(req, res, next);
-			if (!isEmpty(result)) {
+			if (!isUpdateHasNoEffect(result)) {
 				return res.status(SUCCESS_CODE).json({ msg: messageConst.UPDATE_PASSWORD_SUCCESS });
 			} else {
 				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.PASSWORD_WRONG });
@@ -162,7 +162,7 @@ class UserController extends BaseController {
 		}
 		try {
 			const result = await userService.updateSelfAvatar(req, res);
-			if (!isEmpty(result)) {
+			if (!isUpdateHasNoEffect(result)) {
 				return res.status(SUCCESS_CODE).json({ msg: messageConst.UPDATE_SUCCESS });
 			} else {
 				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.UPDATE_FAIL });
@@ -178,7 +178,7 @@ class UserController extends BaseController {
 		}
 		try {
 			const result = await userService.updatePassword(req);
-			if (!isEmpty(result)) {
+			if (!isUpdateHasNoEffect(result)) {
 				return res.status(SUCCESS_CODE).json({ msg: messageConst.UPDATE_PASSWORD_SUCCESS });
 			} else {
 				return res.status(BAD_REQUEST_CODE).json({ msg: messageConst.PASSWORD_WRONG });
