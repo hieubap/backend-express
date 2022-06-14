@@ -3,9 +3,10 @@ const userRoute = require('express').Router();
 const verifyToken = require('../middlewares/authen.middleware');
 const { checkResourceOwner, checkPermission } = require('../middlewares/author.middleware');
 const { s3Upload } = require('../config/s3.config');
+const { appUserTypeConst } = require('../constant');
 
 userRoute.post('/login', (req, res, next) => UserController.login(req, res, next));
-userRoute.post('/register', (req, res, next) => UserController.insert(req, res, next));
+userRoute.post('/register', (req, res, next) => UserController.insert(appUserTypeConst.customer, req, res, next));
 userRoute.put(
 	'/self-update/:id',
 	(req, res, next) => verifyToken(req, res, next),
