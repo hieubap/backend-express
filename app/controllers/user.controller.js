@@ -223,7 +223,8 @@ class UserController extends BaseController {
     try {
       const result = await userService.activate(req)
       if (result === SUCCESS) {
-        res.send('<h1>Kích hoạt tài khoản thành công</h1>')
+        res.set('Content-Type', 'text/html')
+        res.send(Buffer.from('<h1>Kích hoạt tài khoản thành công</h1>'))
       }
       if (result === EXPIRED) {
         res.set('Content-Type', 'text/html')
