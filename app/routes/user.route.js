@@ -32,5 +32,6 @@ userRoute.post(
 );
 userRoute.post('/forgot-password', (req, res, next) => UserController.forgotPassword(req, res, next));
 userRoute.get('/reset-password/:tokenReset', (req, res, next) => UserController.confirmResetPw(req, res, next));
+userRoute.get('/activate/:activateToken', (req, res, next) => UserController.activate(req, res, next));
 
 module.exports = userRoute;

@@ -83,6 +83,9 @@ module.exports = (sequelize) => {
 			token: {
 				type: DataTypes.STRING,
 			},
+			token_activate_account: {
+				type: DataTypes.STRING,
+			},
 			token_reset_pw: {
 				type: DataTypes.STRING,
 			},
