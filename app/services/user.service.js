@@ -18,8 +18,6 @@ class UserService extends BaseService {
     const hashed = md5(req.body?.password)
     try {
       const user = { ...req.body, password: hashed }
-      const activateToken = jwtModel.genKeyActivateAccount(user)
-      user.activateToken =  activateToken
       user.user_type_id = userType
       delete user.manifests
       delete user.system_default
@@ -39,11 +37,31 @@ class UserService extends BaseService {
         createdUser.setManifests(listManifest)
       }
       await t.commit()
+      const t2 = await sequelize.transaction()
+      const activateToken = jwtModel.genKeyActivateAccount(createdUser)
+      try {
+        await createdUser.update({
+          ...createdUser,
+          token_activate_account: activateToken,
+        }, {
+          where: { id: createdUser.id },
+          transaction: t2
+        })
+        await t2.commit()
+      }
+      catch (e) {
+        console.error(e)
+        await t2.rollback()
+        await t.rollback()
+        handleError(e, res)
+        return functionReturnCode.CATCH_ERROR
+      }
       const baseURL = process.env.STATUS == 'development' ? 'http://localhost:3001' : process.env.APP_SERVER_URL
       const mailContent = await parseActivateAccountTemplate(`${baseURL}/user/activate/${activateToken}`)
       await sendMail(user.email, 'Kích hoạt tài khoản', mailContent)
       return functionReturnCode.SUCCESS
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
       await t.rollback()
       handleError(e, res)
@@ -160,11 +178,11 @@ class UserService extends BaseService {
   }
 
   async login(req) {
-    const user = await User.scope('active').findOne({
+    const user = await User.scope(null).findOne({
       where: { email: req.body?.email, password: md5(req.body?.password) },
-      attributes: { exclude: ['token', 'token_reset_pw', 'token_activate_account', 'password', 'deleted_at', 'is_active'] },
+      attributes: { exclude: ['token', 'token_reset_pw', 'token_activate_account', 'password', 'deleted_at'] },
       include: {
-        model: Manifest.scope('active'),
+        model: Manifest.scope(null),
         required: false,
         attributes: ['id', 'role_name', 'content'],
         include: {
@@ -180,12 +198,15 @@ class UserService extends BaseService {
         },
       },
     })
-    if (user.is_active == 0) {
-      return {
-        msg: 'Tài khoản chưa kích hoạt.'
+    if (user) {
+      if (user.is_active == 0) {
+        return {
+          msg: 'Tài khoản chưa kích hoạt.'
+        }
       }
+      return user
     }
-    return user
+    return null
   }
 
   async info(id) {
@@ -284,7 +305,6 @@ class UserService extends BaseService {
     else {
       try {
         await user.update({ is_active: 1, token_activate_account: null })
-
         return functionReturnCode.SUCCESS
       }
       catch (e) {

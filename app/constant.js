@@ -15,7 +15,7 @@ const messageConst = {
 	TOKEN_INVALID: 'Token không chính xác',
 	TOKEN_EXPIRE: 'Token hết hạn',
 	PERMISSION_DENIED: 'không có quyền truy cập tài nguyên',
-	BAD_CRIDENTAL: 'Thông tin đăng nhập không chính xác',
+	BAD_CREDENTIAL: 'Thông tin đăng nhập không chính xác',
 	PASSWORD_WRONG: 'Mật khẩu không chính xác',
 	UPDATE_PASSWORD_SUCCESS: 'Cập nhật mật khẩu thành công',
 	BAD_PARAMETER: 'Tham số không đúng',

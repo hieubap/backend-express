@@ -125,11 +125,19 @@ class UserController extends BaseController {
   async login(req, res, next) {
     try {
       const result = await userService.login(req)
-      if (result) {
-        return res.status(SUCCESS_CODE).json({ data: result, token: jwtUtilModel.genKey(result) })
+      if (result != null) { // A user with the specified credentials has been created in the db
+        if (typeof result.id != 'undefined') { // User activated
+          return res.status(SUCCESS_CODE).json({ data: result, token: jwtUtilModel.genKey(result) })
+        }
+        else if (typeof result.msg != 'undefined') { // User not activated
+          return res.status(statusCode.BAD_REQUEST_CODE).json(result)
+        }
       }
-      return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_CRIDENTAL })
-    } catch (e) {
+      else { // No user found
+        return res.status(BAD_REQUEST_CODE).send({ msg: messageConst.BAD_CREDENTIAL })
+      }
+    }
+    catch (e) {
       handleError(e, res)
     }
   }
