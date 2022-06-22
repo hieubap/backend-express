@@ -36,26 +36,14 @@ class UserService extends BaseService {
         })
         createdUser.setManifests(listManifest)
       }
-      await t.commit()
-      const t2 = await sequelize.transaction()
       const activateToken = jwtModel.genKeyActivateAccount(createdUser)
-      try {
-        await createdUser.update({
-          ...createdUser,
-          token_activate_account: activateToken,
-        }, {
-          where: { id: createdUser.id },
-          transaction: t2
-        })
-        await t2.commit()
-      }
-      catch (e) {
-        console.error(e)
-        await t2.rollback()
-        await t.rollback()
-        handleError(e, res)
-        return functionReturnCode.CATCH_ERROR
-      }
+      await createdUser.update({
+        ...createdUser,
+        token_activate_account: activateToken,
+      }, {
+        transaction: t
+      })
+      await t.commit()
       const baseURL = process.env.STATUS == 'development' ? 'http://localhost:3001' : process.env.APP_SERVER_URL
       const mailContent = await parseActivateAccountTemplate(`${baseURL}/user/activate/${activateToken}`)
       await sendMail(user.email, 'Kích hoạt tài khoản', mailContent)
