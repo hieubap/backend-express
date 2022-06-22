@@ -13,12 +13,12 @@ class BaseService {
 			attributes: { exclude: excludeAttribute },
 			offset: (page - 1) * size,
 			limit: size,
-			order: [['updated_at', 'ASC']],
+			order: [['created_at', 'ASC']],
 		});
 	}
 
 	async findOne(whereClause /* object like {id : 1}*/, includeClause /* object config in case have associate */) {
-		return this.model.findOne({ where: { ...whereClause, deleted_at: null }, include: includeClause });
+		return this.model.findOne({ where: { ...whereClause }, include: includeClause });
 	}
 
 	detail(id) {

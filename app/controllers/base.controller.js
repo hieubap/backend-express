@@ -7,7 +7,7 @@ const { Op } = require('sequelize');
 const { isEmpty, isUpdateHasNoEffect } = require('../utils');
 
 const { SERVER_ERROR_CODE, BAD_REQUEST_CODE, SUCCESS_CODE } = statusCode;
-const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID, PARAM_REQUIRED, REF_NOT_FOUND } = functionReturnCode;
+const { CATCH_ERROR, EXPIRED, NOT_FOUND, SUCCESS, VOID, PARAM_REQUIRED, REF_NOT_FOUND ,THIRD_API_ERROR } = functionReturnCode;
 
 class BaseController {
 	constructor(service) {
@@ -46,6 +46,9 @@ class BaseController {
 		}
 		if (result === CATCH_ERROR) {
 			return res.status(SERVER_ERROR_CODE).json({ msg: messageConst.SERVER_ERROR });
+		}
+		if (result === THIRD_API_ERROR) {
+			return res.status(SERVER_ERROR_CODE).json({ msg: messageConst.THIRD_API_ERROR });
 		}
 		if (isNaN(result)) {
 			return res.status(BAD_REQUEST_CODE).json({ msg: result + ' required' });

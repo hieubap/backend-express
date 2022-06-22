@@ -21,8 +21,9 @@ const messageConst = {
 	BAD_PARAMETER: 'Tham số không đúng',
 	RESET_PASSWORD_SUCCESS: 'Vui lòng kiểm tra email và làm theo hướng dẫn',
 	PAGE_START_FROM_ONE: 'Phân trang bắt đầu từ page 1',
-	NOT_EXIST_ENUM: 'Mã code không hợp lệ',
-	REF_NOT_FOUND: 'Reference id không tồn tại',
+	THIRD_API_ERROR: 'Api bên thứ 3 bị lỗi',
+  NOT_EXIST_ENUM: 'Mã code không hợp lệ',
+  REF_NOT_FOUND: 'Reference id không tồn tại',
 };
 const errorCode = {
 	SQLIZE_VALIDATION_ERROR: 'SequelizeValidationError',
@@ -46,6 +47,7 @@ const functionReturnCode = {
 	EXPIRED: -2,
 	NOT_FOUND: -3,
 	REF_NOT_FOUND: -4,
+	THIRD_API_ERROR: -5,
 	PARAM_REQUIRED: (name) => name,
 };
 const appUserTypeConst = {

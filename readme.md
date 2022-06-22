@@ -50,9 +50,15 @@
    ```
    yarn dev
    ```
-5. Author
-6. Phung Van Sy
-7. Pham Trong Phung
-8. Vu Van Dai
-9. Phan Ha Duy
-10. Tran Khuong Duy
+5.Get Refresh Token GoogleMail
+   access : https://developers.google.com/oauthplayground/
+   chọn service : mail.google.com
+   chinh credential , vào mail đã đăng ký , lấy refresh token (sẽ expire sau 1 tuần)
+
+
+6. Author
+   1. Phung Van Sy
+   2. Pham Trong Phung
+   3. Vu Van Dai
+   4. Phan Ha Duy
+   5. Tran Khuong Duy
