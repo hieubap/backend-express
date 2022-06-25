@@ -35,8 +35,8 @@ class DashboardService {
 	getOverviewSensor(req) {
 		return sequelize.query(
 			'select count(*) as total ,\n' +
-				'(select count(*) from location where location_id is not null ) as number_has_location,\n' +
-				'(select count(*) from location where location_id is null ) as number_idle\n' +
+				'(select count(*) from sensor_device where location_id is not null ) as number_has_location,\n' +
+				'(select count(*) from sensor_device where location_id is null ) as number_idle\n' +
 				'from sensor_device;',
 			{
 				type: QueryTypes.SELECT,

@@ -1,6 +1,6 @@
 const { Manifest, UserType, Permission, sequelize } = require('../models/index.model');
 const BaseService = require('./base.service');
-const { functionReturnCode } = require('../constant');
+const { functionReturnCode, statusCode } = require('../constant');
 const { handleError } = require('./handleError.util-service');
 const { Op } = require('sequelize');
 
@@ -19,7 +19,7 @@ class ManifestService extends BaseService {
 	}
 
 	async detail(id) {
-		return Manifest.findByPk(id, {
+		return Manifest.scope(null).findByPk(id, {
 			include: [
 				{
 					model: UserType,
@@ -52,6 +52,7 @@ class ManifestService extends BaseService {
 		try {
 			const manifestObj = { ...req.body };
 			delete manifestObj.permissions;
+			delete manifestObj.system_default;
 			if (req.id) {
 				manifestObj.created_id = req.id;
 			}
@@ -85,8 +86,10 @@ class ManifestService extends BaseService {
 		if (req.body.is_active !== 1) {
 			req.body.is_active = 0;
 		}
+		if (req.system_default === 1) {
+			res.status(statusCode.NOT_AUTHOR_CODE).json({ msg: 'Không được phép thay đổi quyền hạn superAdmin' });
+		}
 		const t = await sequelize.transaction();
-
 		try {
 			const oldManifest = await Manifest.scope('notDeleted').findByPk(req.params.id);
 			if (!oldManifest) {

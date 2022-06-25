@@ -66,7 +66,7 @@ module.exports = (sequelize) => {
 			deletedAt: 'deleted_at',
 			sequelize,
 			modelName: 'Location',
-			tableName: 'Location',
+			tableName: 'location',
 		},
 	);
 	return Location;

@@ -6,6 +6,8 @@ module.exports = (sequelize) => {
 	Permission.init(
 		{
 			name: DataTypes.STRING(50),
+			vi_name: DataTypes.STRING(100),
+			parent_id: DataTypes.INTEGER(),
 		},
 		{
 			timestamps: true,

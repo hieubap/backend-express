@@ -6,8 +6,14 @@ class PermissionService extends BaseService {
 		super(Permission);
 	}
 
-	search(whereClause, offset = 0, limit = 10) {
-		return Permission.findAndCountAll({ where: {} });
+	async search(whereClause, offset = 0, limit = 10) {
+		const allPermission = (await Permission.findAll({ where: {}, raw: true })) || [];
+		const result = allPermission?.filter((pm) => !pm.parent_id);
+		result.map((parent) => {
+			parent.subPermission = allPermission?.filter((pm) => pm.parent_id === parent.id);
+			return parent;
+		});
+		return result;
 	}
 
 	// more query
