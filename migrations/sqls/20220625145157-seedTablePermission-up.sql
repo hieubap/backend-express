@@ -1,4 +1,5 @@
 /* Replace with your SQL commands */
+delete from airsense.permission;
 INSERT INTO airsense.permission (id, name, created_at, updated_at, deleted_at, vi_name, parent_id) VALUES (1, 'CREATE_CUSTOMER', '2022-06-01 21:30:39', '2022-06-01 21:30:39', null, 'tạo khách hàng', 19);
 INSERT INTO airsense.permission (id, name, created_at, updated_at, deleted_at, vi_name, parent_id) VALUES (3, 'UPDATE_CUSTOMER', '2022-06-01 21:30:39', '2022-06-01 21:30:39', null, 'cập nhật khách hàng', 19);
 INSERT INTO airsense.permission (id, name, created_at, updated_at, deleted_at, vi_name, parent_id) VALUES (4, 'DELETE_CUSTOMER', '2022-06-01 21:30:39', '2022-06-01 21:30:39', null, 'xóa hoạt động khách hàng', 19);
