@@ -38,7 +38,7 @@ module.exports = (sequelize) => {
 				defaultValue: 300,
 				validate: {
 					min: {
-						args: 0,
+						args: [0],
 						msg: 'Khoảng cách giữa các lần gửi tin phải lớn hơn 0',
 					},
 				},
