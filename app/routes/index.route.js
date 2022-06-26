@@ -92,6 +92,8 @@ const allAppRoute = (app) => {
 			});
 		},
 	);
+		
+
 };
 
 module.exports = { allAppRoute };

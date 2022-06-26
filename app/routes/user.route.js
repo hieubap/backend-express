@@ -33,5 +33,13 @@ userRoute.post(
 userRoute.post('/forgot-password', (req, res, next) => UserController.forgotPassword(req, res, next));
 userRoute.get('/reset-password/:tokenReset', (req, res, next) => UserController.confirmResetPw(req, res, next));
 userRoute.get('/activate/:activateToken', (req, res, next) => UserController.activate(req, res, next));
+userRoute.get(
+	'/check-permission',
+	(req, res, next) => verifyToken(req, res, next),
+	(req, res, next) => checkPermission(req.headers.permission || 'X', req, res, next),
+	(_req, res) => {
+		res.status(200).json({ msg: 'account verified' });
+	},
+);
 
 module.exports = userRoute;

@@ -1,33 +1,43 @@
 /* Replace with your SQL commands */
 INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 1, DEFAULT, DEFAULT, null);
+VALUES (1, 1, DEFAULT, DEFAULT, null) 
+        ,(1, 3, DEFAULT, DEFAULT, null) 
+        ,(1, 4, DEFAULT, DEFAULT, null) 
+        ,(1, 5, DEFAULT, DEFAULT, null) 
+        ,(1, 6, DEFAULT, DEFAULT, null) 
+        ,(1, 7, DEFAULT, DEFAULT, null) 
+        ,(1, 8, DEFAULT, DEFAULT, null) 
+        ,(1, 12, DEFAULT, DEFAULT, null) 
+        ,(1, 13, DEFAULT, DEFAULT, null) 
+        ,(1, 14, DEFAULT, DEFAULT, null) 
+        ,(1, 15, DEFAULT, DEFAULT, null) 
+        ,(1, 19, DEFAULT, DEFAULT, null) 
+        ,(1, 20, DEFAULT, DEFAULT, null) 
+        ,(1, 21, DEFAULT, DEFAULT, null) 
+        ,(1, 22, DEFAULT, DEFAULT, null) 
+        ,(1, 23, DEFAULT, DEFAULT, null) 
+        ,(1, 24, DEFAULT, DEFAULT, null) 
+        ,(1, 25, DEFAULT, DEFAULT, null) 
+        ,(1, 26, DEFAULT, DEFAULT, null) 
+        ,(1, 27, DEFAULT, DEFAULT, null) 
+        ,(1, 28, DEFAULT, DEFAULT, null) 
+        ,(1, 29, DEFAULT, DEFAULT, null) 
+        ,(1, 30, DEFAULT, DEFAULT, null) 
+        ,(1, 31, DEFAULT, DEFAULT, null) 
+        ,(1, 32, DEFAULT, DEFAULT, null) 
+        ,(1, 33, DEFAULT, DEFAULT, null) 
+        ,(1, 34, DEFAULT, DEFAULT, null) 
+        ,(1, 35, DEFAULT, DEFAULT, null) 
+        ,(1, 36, DEFAULT, DEFAULT, null) 
+        ,(1, 37, DEFAULT, DEFAULT, null) 
+        ,(1, 38, DEFAULT, DEFAULT, null) 
+        ,(1, 39, DEFAULT, DEFAULT, null) 
+        ,(1, 40, DEFAULT, DEFAULT, null) 
+        ,(1, 41, DEFAULT, DEFAULT, null) 
+        ,(1, 42, DEFAULT, DEFAULT, null) 
+        ,(1, 43, DEFAULT, DEFAULT, null) 
+        ,(1, 44, DEFAULT, DEFAULT, null) 
+        ,(1, 45, DEFAULT, DEFAULT, null) 
+        ,(1, 46, DEFAULT, DEFAULT, null) ;
 
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 2, DEFAULT, DEFAULT, null);
 
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 3, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 4, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 5, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 6, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 7, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 8, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 9, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 10, DEFAULT, DEFAULT, null);
-
-INSERT INTO airsense.manifest_ref_permission (manifest_id, permission_id, created_at, updated_at, deleted_at)
-VALUES (1, 11, DEFAULT, DEFAULT, null);
