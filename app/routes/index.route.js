@@ -7,7 +7,7 @@ const sensorDeviceRouter = require('./sensorDevice.route');
 const dashboardRouter = require('./dashboard.route');
 
 const { appUserTypeConst, appPermissionConst } = require('../constant');
-const { s3Upload } = require('../config/s3.config');
+// const { s3Upload } = require('../config/s3.config');
 const authenMiddle = require('../middlewares/authen.middleware');
 const userAdminRouterRaw = require('express').Router();
 const userCustomerRouterRaw = require('express').Router();
@@ -76,22 +76,22 @@ const allAppRoute = (app) => {
 	app.use('/sensor', sensorDeviceRouter);
 	app.use('/overview', dashboardRouter);
 
-	app.post(
-		'/upload-image',
-		(req, res, next) => authenMiddle(req, res, next),
-		s3Upload.single('file'),
-		(req, res, next) => {
-			if (!req?.file?.location) {
-				res.status(500).json({
-					message: 'Upload failed!',
-				});
-			}
-			res.status(200).json({
-				message: 'Uploaded!',
-				urls: req?.file?.location,
-			});
-		},
-	);
+	// app.post(
+	// 	'/upload-image',
+	// 	(req, res, next) => authenMiddle(req, res, next),
+	// 	s3Upload.single('file'),
+	// 	(req, res, next) => {
+	// 		if (!req?.file?.location) {
+	// 			res.status(500).json({
+	// 				message: 'Upload failed!',
+	// 			});
+	// 		}
+	// 		res.status(200).json({
+	// 			message: 'Uploaded!',
+	// 			urls: req?.file?.location,
+	// 		});
+	// 	},
+	// );
 		
 
 };

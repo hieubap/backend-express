@@ -20,6 +20,8 @@
     "db-migrate-mysql": "^2.2.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "firebase": "^9.14.0",
+    "firestore-sequelize": "^0.8.0",
     "googleapis": "^100.0.0",
     "handlebars": "^4.7.7",
     "jsonwebtoken": "^8.5.1",

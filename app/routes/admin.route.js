@@ -1,7 +1,7 @@
 const UserController = require('../controllers/user.controller');
 const verifyToken = require('../middlewares/authen.middleware');
 const { checkPermission } = require('../middlewares/author.middleware');
-const { s3Upload } = require('../config/s3.config');
+// const { s3Upload } = require('../config/s3.config');
 
 module.exports = (router, options) => {
 	router.post(
@@ -16,13 +16,13 @@ module.exports = (router, options) => {
 		(req, res, next) => checkPermission(options.update.permission, req, res, next),
 		(req, res, next) => UserController.update(options.update.userType, req, res, next),
 	);
-	router.put(
-		'/update-avatar/:id',
-		(req, res, next) => verifyToken(req, res, next),
-		(req, res, next) => checkPermission(options.update.permission, req, res, next),
-		s3Upload.single('file'),
-		(req, res, next) => UserController.updateAvatar(options.update.userType, req, res, next),
-	);
+	// router.put(
+	// 	'/update-avatar/:id',
+	// 	(req, res, next) => verifyToken(req, res, next),
+	// 	(req, res, next) => checkPermission(options.update.permission, req, res, next),
+	// 	s3Upload.single('file'),
+	// 	(req, res, next) => UserController.updateAvatar(options.update.userType, req, res, next),
+	// );
 	router.put(
 		'/toggle-active/:id',
 		(req, res, next) => verifyToken(req, res, next),
