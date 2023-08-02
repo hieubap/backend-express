@@ -18,6 +18,8 @@ const db = {
 	Sequelize,
 	sequelize,
 	Data: require('./data.model')(sequelize),
+	SinhVien: require('./sinhVien.model')(sequelize),
+	Setting: require('./setting.model')(sequelize),
 };
 
 module.exports = db;
