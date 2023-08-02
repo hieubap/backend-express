@@ -1,5 +1,5 @@
 {
-  "mysql": {
+  "pg": {
     "host": {
       "ENV": "MYSQL_HOST"
     },
@@ -12,7 +12,7 @@
     "database": {
       "ENV": "MYSQL_DB"
     },
-    "driver": "mysql",
+    "driver": "pg",
     "multipleStatements": true
   },
   "mongo": {

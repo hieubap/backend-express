@@ -4,12 +4,12 @@ const { allAppRoute } = require('./app/routes/index.route');
 const bodyParser = require('body-parser');
 const app = express();
 const cors = require('cors');
-const initFirebaseController = require('./app/common/firebase/base.controller');
+// const initFirebaseController = require('./app/common/firebase/base.controller');
 
 app.use(cors());
 app.use(express.json());
-
-initFirebaseController(app);
+allAppRoute(app);
+// initFirebaseController(app);
 
 const httpServer = require('http').createServer(app);
 
