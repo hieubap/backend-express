@@ -13,14 +13,14 @@ module.exports = (sequelize) => {
 			},
 		},
 		{
-			timestamps: true,
+			timestamps: false,
 			paranoid: true,
-			createdAt: 'created_at',
-			updatedAt: 'updated_at',
-			deletedAt: 'deleted_at',
+			// createdAt: 'created_at',
+			// updatedAt: 'updated_at',
+			// deletedAt: 'deleted_at',
 			sequelize,
-			modelName: 'SinhVien',
-			tableName: 'sinh_vien',
+			modelName: 'CaiDat',
+			tableName: 'cai_dat',
 		},
 	);
 	return Setting;

@@ -1,18 +1,14 @@
 const nodemailer = require('nodemailer');
 const { Router } = require('express');
-const { SinhVien, sequelize } = require('../models/index.model');
+const { SinhVien, sequelize, Setting } = require('../models/index.model');
 const readFileExcel = require('read-excel-file/node');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const { authMiddle, config } = require('./utils');
+const moment = require('moment');
 console.log(path.resolve(__dirname, ``), 'path----');
 const verifyHtml = fs.readFileSync(path.resolve(__dirname, `../static/ticket2.html`));
-
-const config = {
-	userEmail: 'ngohieu1811@gmail.com',
-	passEmail: 'xuvfadzbotrkztui',
-	urlTicket: 'https://qldt-demo.isofh.com/sis/ticket/',
-};
 
 const transporter = nodemailer.createTransport({
 	host: 'smtp.gmail.com',
@@ -27,7 +23,7 @@ const transporter = nodemailer.createTransport({
 const router = (app) => {
 	const router = Router();
 	app.use('/sinh-vien', router);
-	router.post('/send-email', async (req, res, next) => {
+	router.post('/send-email', authMiddle, async (req, res, next) => {
 		if (!req.body?.ids?.length) {
 			res.json({
 				code: 400,
@@ -35,6 +31,13 @@ const router = (app) => {
 			});
 			return;
 		}
+		const dsThietLap = await Setting.findAll();
+		const thietLapHeThong = {};
+		for (let i = 0; i < dsThietLap.length; i++) {
+			thietLapHeThong[dsThietLap[i].key] = dsThietLap[i].value;
+		}
+		const batDau = moment(thietLapHeThong.batDau);
+		const ketThuc = moment(thietLapHeThong.ketThuc);
 		try {
 			for (let i = 0; i < req.body?.ids?.length; i++) {
 				const studentRecord = await SinhVien.findOne({
@@ -44,19 +47,28 @@ const router = (app) => {
 				});
 				const html = verifyHtml
 					.toString()
-					.replace('{{ten_su_kien}}', 'Galadinner tốt nghiệp điện tử viễn thông K63')
-					.replace('{{ngay}}', '16')
-					.replace('{{thoi_gian_1}}', 'Wed, Aug 16')
-					.replace('{{thoi_gian_2}}', '7:00 PM to 9:00 PM GMT+7')
-					.replace('{{dia_diem_1}}', 'Novotel Hanoi Thai Ha')
-					.replace('{{dia_diem_2}}', 'Wd, Hà nội')
-					.replace('{{url_my_ticket}}', config.urlTicket + studentRecord.id);
+					.replace(
+						'{{ten_su_kien}}',
+						thietLapHeThong.tenSuKien || 'Galadinner tốt nghiệp điện tử viễn thông K63',
+					)
+					.replace('{{ngay}}', batDau.format('DD') || '16')
+					.replace('{{thoi_gian_1}}', batDau.format('ddd, MMM DD') || 'Wed, Aug 16')
+					.replace(
+						'{{thoi_gian_2}}',
+						batDau.format('HH:mm') + ' to ' + ketThuc.format('HH:mm') + ' GMT+7' ||
+							'7:00 PM to 9:00 PM GMT+7',
+					)
+					.replace('{{dia_diem_1}}', thietLapHeThong.toaNha || 'Dai hoc BK Hanoi')
+					.replace('{{dia_diem_2}}', thietLapHeThong.diaDiem || 'Wd, Hà nội')
+					.replace('{{url_my_ticket}}', config.urlTicket + studentRecord.id)
+					.replace('{{url_map}}', thietLapHeThong.urlMap)
+					.replace('{{url_event}}', thietLapHeThong.urlEvent);
 				if (studentRecord) {
 					await transporter.sendMail(
 						{
 							from: config.userEmail,
 							to: studentRecord.email,
-							subject: 'TICKET GALADINNER',
+							subject: thietLapHeThong.emailTitle || 'TICKET GALADINNER',
 							html,
 						},
 						(error) => {
@@ -144,7 +156,7 @@ const router = (app) => {
 			data: dataModel,
 		});
 	});
-	router.post('/check-in/:id', async (req, res, next) => {
+	router.post('/check-in/:id', authMiddle, async (req, res, next) => {
 		const dataModel = await SinhVien.findOne({
 			where: {
 				id: req.params.id,
@@ -166,4 +178,4 @@ const router = (app) => {
 		});
 	});
 };
-module.exports = router;
+module.exports = { router, config };
