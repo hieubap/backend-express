@@ -21,7 +21,7 @@ const router = (app) => {
 		});
 		console.log(username);
 		if (username && password) {
-			if (username === req.body.username && password === req.body.password) {
+			if (username?.toLowerCase() === req.body.username?.toLowerCase() && password === req.body.password) {
 				res.json({
 					code: 0,
 					message: 'success',
