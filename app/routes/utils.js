@@ -15,6 +15,7 @@ const authMiddle = (req, res, next) => {
 		console.log(token, moment(token).format(), '????', moment(token).date());
 		if (!moment(token).get('HH') || moment() > moment(token)) {
 			res.json({
+				code: 401,
 				message: 'Token invalid',
 			});
 			return;
@@ -23,6 +24,7 @@ const authMiddle = (req, res, next) => {
 	} catch (e) {
 		console.log(e, 'e??');
 		res.json({
+			code: 401,
 			message: 'Token invalid',
 		});
 	}
