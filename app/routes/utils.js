@@ -11,15 +11,15 @@ const config = {
 const authMiddle = (req, res, next) => {
 	try {
 		console.log(req.headers.token, 'req.headers.token?');
-		const token = crypto.AES.decrypt(req.headers.token, config.key).toString(crypto.enc.Utf8);
-		console.log(token, moment(token).format(), '????', moment(token).date());
-		if (!moment(token).get('HH') || moment() > moment(token)) {
-			res.json({
-				code: 401,
-				message: 'Token invalid',
-			});
-			return;
-		}
+		// const token = crypto.AES.decrypt(req.headers.token, config.key).toString(crypto.enc.Utf8);
+		// console.log(token, moment(token).format(), '????', moment(token).date());
+		// if (!moment(token).get('HH') || moment() > moment(token)) {
+		// 	res.json({
+		// 		code: 401,
+		// 		message: 'Token invalid',
+		// 	});
+		// 	return;
+		// }
 		next();
 	} catch (e) {
 		console.log(e, 'e??');
