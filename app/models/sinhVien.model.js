@@ -14,15 +14,27 @@ module.exports = (sequelize) => {
 			sdt: {
 				type: DataTypes.STRING(),
 			},
-			status: {
+			emails: {
+				type: DataTypes.STRING(),
+			},
+			checks: {
+				type: DataTypes.STRING(),
+			},
+			soLuot: {
 				type: DataTypes.NUMBER(),
 			},
-			checked_at: {
-				type: DataTypes.TIME(),
-			},
-			sended_at: {
-				type: DataTypes.TIME(),
-			},
+			// status: {
+			// 	type: DataTypes.NUMBER(),
+			// },
+			// checks: {
+			// 	type: DataTypes.STRING(),
+			// },
+			// checked_at: {
+			// 	type: DataTypes.TIME(),
+			// },
+			// sended_at: {
+			// 	type: DataTypes.TIME(),
+			// },
 		},
 		{
 			timestamps: true,
@@ -32,7 +44,7 @@ module.exports = (sequelize) => {
 			deletedAt: 'deleted_at',
 			sequelize,
 			modelName: 'SinhVien',
-			tableName: 'sinh_vien',
+			tableName: 'sinh_vien_2',
 		},
 	);
 	return SinhVien;

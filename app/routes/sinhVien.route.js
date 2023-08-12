@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { authMiddle, config } = require('./utils');
 const moment = require('moment');
+const { Op } = require('sequelize');
 console.log(path.resolve(__dirname, ``), 'path----');
 const verifyHtml = fs.readFileSync(path.resolve(__dirname, `../static/ticket2.html`));
 
@@ -115,6 +116,102 @@ const router = (app) => {
 			});
 		}
 	});
+	router.post('/cap-nhat-so-luot', authMiddle, async (req, res, next) => {
+		try {
+			if (!req.body?.ids?.length) {
+				res.json({
+					code: 400,
+					message: 'please enter ids (type array)',
+				});
+				return;
+			}
+			const lists = [];
+
+			for (let i = 0; i < req.body.ids.length; i++) {
+				const sv = req.body.ids[i];
+				const existedData = await SinhVien.findOne({
+					where: {
+						id: sv + '',
+					},
+				});
+				if (existedData) {
+					lists.push(sv);
+				}
+			}
+			const t = await sequelize.transaction();
+			await SinhVien.update(
+				{ soLuot: req.body.soLuot },
+				{
+					transaction: t,
+					where: {
+						id: {
+							[Op.in]: lists.map((i) => i - 0),
+						},
+					},
+				},
+			);
+			await t.commit();
+			res.json({ code: 0, message: 'success' });
+		} catch (error) {
+			res.json({
+				code: 500,
+				message: error?.message,
+			});
+		}
+	});
+	router.post('/cap-nhat-danh-sach-2', async (req, res, next) => {
+		try {
+			if (!req.body?.data?.length) {
+				res.json({
+					code: 400,
+					message: 'please enter data (type array)',
+				});
+				return;
+			}
+			const lists = {};
+
+			for (let i = 0; i < req.body.data.length; i++) {
+				const sv = req.body.data[i];
+				const existedData = await SinhVien.findOne({
+					where: {
+						sdt: sv.sdt + '',
+					},
+				});
+				if (!existedData) {
+					if (!lists[sv.sdt]) {
+						lists[sv.sdt] = sv;
+						lists[sv.sdt].emails = [sv.email];
+					} else {
+						lists[sv.sdt].emails.push(sv.email);
+					}
+				} else {
+					if (JSON.parse(existedData.emails).includes(sv.email)) {
+					} else if (!lists[sv.sdt]) {
+						lists[sv.sdt] = existedData;
+						lists[sv.sdt].emails = JSON.parse(existedData.emails);
+					} else {
+						lists[sv.sdt].emails.push(sv.email);
+					}
+				}
+			}
+			const t = await sequelize.transaction();
+			await SinhVien.bulkCreate(
+				Object.values(lists).map((i) => ({
+					...i,
+					emails: JSON.stringify(Array.from(new Set(i.emails))),
+					soLuot: i.soLuot || 1,
+				})),
+				{ transaction: t },
+			);
+			await t.commit();
+			res.json({ code: 0, message: 'success' });
+		} catch (error) {
+			res.json({
+				code: 500,
+				message: error?.message,
+			});
+		}
+	});
 	router.post('/cap-nhat-danh-sach', async (req, res, next) => {
 		try {
 			if (!req.body?.data?.length) {
@@ -163,8 +260,17 @@ const router = (app) => {
 			},
 		});
 
+		const newChecks = [...(dataModel.checks ? JSON.parse(dataModel.checks) : []), moment().format()];
+
+		if (newChecks.length > dataModel.soLuot) {
+			res.json({
+				code: 400,
+				message: 'Đã vượt quá giới hạn check in',
+			});
+		}
+
 		const data = await SinhVien.update(
-			{ status: 2, checked_at: new Date() },
+			{ checks: JSON.stringify(newChecks) },
 			{
 				where: {
 					id: req.params.id,
