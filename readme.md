@@ -1,4 +1,4 @@
-## AIRSENCE-20212
+## MRS-20212
 
 1. Intro
 
@@ -13,7 +13,7 @@
    link https://www.nextofwindows.com/fix-unable-to-run-yarn-in-windows-terminal-powershell
 
 3. Database setup & migration
-    1. create database 'airsense' in your local , and set enviroment in .env file
+    1. create database 'web3_patient' in your local , and set enviroment in .env file
     2. import table
    ```
         db-migrate up -e mysql
@@ -50,15 +50,6 @@
    ```
    yarn dev
    ```
-5.Get Refresh Token GoogleMail
-   access : https://developers.google.com/oauthplayground/
-   chọn service : mail.google.com
-   chinh credential , vào mail đã đăng ký , lấy refresh token (sẽ expire sau 1 tuần)
 
-
-6. Author
-   1. Phung Van Sy
-   2. Pham Trong Phung
-   3. Vu Van Dai
-   4. Phan Ha Duy
-   5. Tran Khuong Duy
+5. Author
+   Ngo Quang Hieu

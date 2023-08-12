@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "AirSence 20212",
+  "description": "Data save 20212",
   "main": "server.js",
   "scripts": {
     "migrate:pg": "db-migrate up -e pg",
@@ -11,7 +11,7 @@
     "start": "db-migrate up -e mysql && pm2-runtime start ecosystem.config.js"
   },
   "keywords": [],
-  "author": "Phung Van Sy + Pham Trong Phung + Vu Van Dai + Phan Ha Duy + Tran Khuong Duy",
+  "author": "Ngo Quang Hieu",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.107.0",
