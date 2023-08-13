@@ -64,31 +64,34 @@ const router = (app) => {
 					.replace('{{url_my_ticket}}', config.urlTicket + studentRecord.id)
 					.replace('{{url_map}}', thietLapHeThong.urlMap)
 					.replace('{{url_event}}', thietLapHeThong.urlEvent);
-				if (studentRecord) {
-					await transporter.sendMail(
-						{
-							from: config.userEmail,
-							to: studentRecord.email,
-							subject: thietLapHeThong.emailTitle || 'TICKET GALADINNER',
-							html,
-						},
-						(error) => {
-							if (error) {
-								console.log(error, 'error?');
-								// reject(error);
-								res.json({
-									message: error?.toString(),
-								});
-							} else {
-								res.json({
-									code: 0,
-									message: 'success',
-								});
-								console.log(error, 'error?');
-								// resolve(true);
-							}
-						},
-					);
+				if (studentRecord && studentRecord.emails) {
+					const emails = JSON.parse(studentRecord.emails) || [];
+					for (let i = 0; i < emails.length; i++) {
+						await transporter.sendMail(
+							{
+								from: config.userEmail,
+								to: emails[i],
+								subject: thietLapHeThong.emailTitle || 'TICKET GALADINNER',
+								html,
+							},
+							(error) => {
+								if (error) {
+									console.log(error, 'error?');
+									// reject(error);
+									res.json({
+										message: error?.toString(),
+									});
+								} else {
+									res.json({
+										code: 0,
+										message: 'success',
+									});
+									console.log(error, 'error?');
+									// resolve(true);
+								}
+							},
+						);
+					}
 				}
 			}
 		} catch (e) {
