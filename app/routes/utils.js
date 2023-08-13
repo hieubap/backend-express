@@ -2,8 +2,8 @@ const crypto = require('crypto-js');
 const moment = require('moment');
 
 const config = {
-	userEmail: 'et.set.hust@gmail.com',
-	passEmail: 'ktqbbzjobngdwwqg',
+	userEmail: 'et@set.hust.edu.vn',
+	passEmail: 'jctkpyipvapwaqam',
 	urlTicket: 'https://qldt-demo.isofh.com/sis/ticket/',
 	key: 'GALADINNER_2023_DTVT_TOT_NGHIEP',
 };

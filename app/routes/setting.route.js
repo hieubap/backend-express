@@ -8,7 +8,6 @@ const router = (app) => {
 	app.use('/cai-dat', router);
 
 	router.post('/dang-nhap', async (req, res, next) => {
-		const t = await sequelize.transaction();
 		const { value: username } = await Setting.findOne({
 			where: {
 				key: 'username',
