@@ -82,10 +82,6 @@ const router = (app) => {
 										message: error?.toString(),
 									});
 								} else {
-									res.json({
-										code: 0,
-										message: 'success',
-									});
 									console.log(error, 'error?');
 									// resolve(true);
 								}
@@ -94,6 +90,13 @@ const router = (app) => {
 					}
 				}
 			}
+			const t = await sequelize.transaction();
+			await Setting.create({ key: 'sendedEmail', value: JSON.stringify(req.body) }, { transaction: t });
+			await t.commit();
+			res.json({
+				code: 0,
+				message: 'success',
+			});
 		} catch (e) {
 			res.json({
 				code: 500,
@@ -270,6 +273,7 @@ const router = (app) => {
 				code: 400,
 				message: 'Đã vượt quá giới hạn check in',
 			});
+			return;
 		}
 
 		const data = await SinhVien.update(
