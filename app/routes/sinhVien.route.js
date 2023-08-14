@@ -91,7 +91,13 @@ const router = (app) => {
 				}
 			}
 			const t = await sequelize.transaction();
-			await Setting.create({ key: 'sendedEmail', value: JSON.stringify(req.body) }, { transaction: t });
+			await Setting.create(
+				{
+					key: 'sendedEmail' + moment().format('HHmmDDMM'),
+					value: JSON.stringify({ ...req.body, time: moment().format() }),
+				},
+				{ transaction: t },
+			);
 			await t.commit();
 			res.json({
 				code: 0,
