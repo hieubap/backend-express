@@ -39,6 +39,7 @@ const router = (app) => {
 		}
 		const batDau = moment(thietLapHeThong.batDau);
 		const ketThuc = moment(thietLapHeThong.ketThuc);
+		const errorList = [];
 		try {
 			for (let i = 0; i < req.body?.ids?.length; i++) {
 				const studentRecord = await SinhVien.findOne({
@@ -77,10 +78,11 @@ const router = (app) => {
 							(error) => {
 								if (error) {
 									console.log(error, 'error?');
+									errorList.push({ email: emails[i], e: error?.toString() });
 									// reject(error);
-									res.json({
-										message: error?.toString(),
-									});
+									// res.json({
+									// 	message: error?.toString(),
+									// });
 								} else {
 									console.log(error, 'error?');
 									// resolve(true);
@@ -94,7 +96,7 @@ const router = (app) => {
 			await Setting.create(
 				{
 					key: 'sendedEmail' + moment().format('HHmmDDMM'),
-					value: JSON.stringify({ ...req.body, time: moment().format() }),
+					value: JSON.stringify({ ...req.body, time: moment().format(), errorList }),
 				},
 				{ transaction: t },
 			);
