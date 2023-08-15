@@ -80,14 +80,14 @@ const router = (app) => {
 							},
 							(error) => {
 								if (error) {
-									console.log(error, 'error?');
+									console.log(error, 'error?',emails[i]);
 									errorList.push({ email: emails[i], e: error?.toString() });
 									// reject(error);
 									// res.json({
 									// 	message: error?.toString(),
 									// });
 								} else {
-									console.log(error, 'error?');
+									console.log(error, 'error?',emails[i]);
 									// resolve(true);
 								}
 							},
@@ -122,7 +122,7 @@ const router = (app) => {
 			const data = await SinhVien.findOne({
 				where: {
 					id: id,
-					sdt: sdt,
+					// sdt: sdt,
 				},
 			});
 			res.json({
