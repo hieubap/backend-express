@@ -62,7 +62,10 @@ const router = (app) => {
 					)
 					.replace('{{dia_diem_1}}', thietLapHeThong.toaNha || 'Dai hoc BK Hanoi')
 					.replace('{{dia_diem_2}}', thietLapHeThong.diaDiem || 'Wd, Hà nội')
-					.replace('{{url_my_ticket}}', config.urlTicket + studentRecord.id)
+					.replace(
+						'{{url_my_ticket}}',
+						config.urlTicket + (studentRecord.id + '').padStart(5, '0') + studentRecord.sdt,
+					)
 					.replace('{{url_map}}', thietLapHeThong.urlMap)
 					.replace('{{url_event}}', thietLapHeThong.urlEvent);
 				if (studentRecord && studentRecord.emails) {
@@ -113,10 +116,13 @@ const router = (app) => {
 		}
 	});
 	router.get('/chi-tiet/:id', async (req, res, next) => {
+		const id = req.params.id.slice(0, 5);
+		const sdt = req.params.id.slice(5, req.params.id.length);
 		try {
 			const data = await SinhVien.findOne({
 				where: {
-					id: req.params.id,
+					id: id,
+					sdt: sdt,
 				},
 			});
 			res.json({
