@@ -19,6 +19,7 @@ const db = {
 	sequelize,
 	Data: require('./data.model')(sequelize),
 	SinhVien: require('./sinhVien.model')(sequelize),
+	SinhVienSaiMail: require('./sinhVien.saiMail.model')(sequelize),
 	Setting: require('./setting.model')(sequelize),
 };
 
